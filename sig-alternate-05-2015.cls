@@ -50,7 +50,7 @@
 \def\fileversion{v2.9}          % for ACM's tracking purposes
 \def\filedate{August 12, 2013}    % Gerry Murray's tracking data
 \def\docdate {\filedate}
-\usepackage{epsfig}
+%\usepackage{epsfig}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{amsfonts}
