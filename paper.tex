@@ -1,6 +1,5 @@
 \documentclass{sig-alternate-05-2015}
 \usepackage[l2tabu,orthodox]{nag}
-\usepackage{fixltx2e}
 \usepackage[utf8x]{inputenc}       
 \usepackage[british]{babel}        
 \usepackage[babel=true]{microtype}
@@ -92,91 +91,158 @@
 %==================================================================================================
 \section{Introduction}
 
-% General advice:
-%  - Avoid stock and cliche phrases such as "recent advances in XYZ" or
-%    anything alluding to the growth of the Internet (unless your paper
-%    is about the growth of the Internet!).
-%  - Be sure that the introduction lets the reader know what this paper is
-%    about, not just how important your general area of research is.
-%    Readers won't stick with you for three pages to find out what you are
-%    talking about.
-%  - The introduction must motivate your work by pinpointing the problem
-%    you are addressing and then give an overview of your approach and/or
-%    contributions (and perhaps even a general description of your
-%    results).  In this way, the intro sets up my expectations for the
-%    rest of your paper -- it provides the context, and a preview.
-%  - Repeating the abstract in the introduction is a waste of space.
+% A good paper introduction is fairly formulaic. If you follow a simple set
+% of rules, you can write a very good introduction. The following outline can
+% be varied. For example, you can use two paragraphs instead of one, or you
+% can place more emphasis on one aspect of the intro than another. But in all
+% cases, all of the points below need to be covered in an introduction, and
+% in most papers, you don't need to cover anything more in an introduction.
+%
+% Paragraph 1: Motivation. At a high level, what is the problem area you
+% are working in and why is it important? It is important to set the larger
+% context here. Why is the problem of interest and importance to the larger
+% community?
 
-% para. 1: motivation: broadly, what is problem area, why important? 
+Real-time applications are increasingly important in the Internet. 
+We want to make it easier to write these applications, while improving
+the quality of experience for users of those applications by lowering
+latency and increasing robustness. 
+In this, we are challenged by the limitations of the standard Internet 
+transport protocols, and by the ossified nature of the network, which makes
+it increasingly difficult to deploy new transports. 
 
+% Paragraph 2: What is the specific problem considered in this paper? This
+% paragraph narrows down the topic area of the paper. In the first
+% paragraph you have established general context and importance. Here you
+% establish specific context and background.
 
+In practice, the only protocols that can be widely used in the Internet are
+TCP and UDP. Other protocols are blocked by firewalls and other middleboxes.  
+TCP provides sophisticated congestion control, coupled with a reliable,
+ordered, byte stream API. These are suitable for many applications, but are
+not necessarily appropriate for real-time traffic.  UDP exposes essentially
+the raw IP packet delivery service, offering flexibility to develop new
+protocols, but at the cost of requiring completely new protocol mechanisms
+to be defined. While both protocols are usable for real-time applications,
+neither really provides the right services and API.
 
-% para. 2: narrow down: what is problem you specifically consider
-
-
-
-% para. 3: "In this paper, we ...": most crucial paragraph, tell your
-% elevator pitch. The story is not what you did, but rather:
+% Paragraph 3: "In this paper, we show that...". This is the key paragraph
+% in the introduction - you summarize, in one paragraph, what are the main
+% contributions of your paper, given the context established in paragraphs 
+% 1 and 2. What's the general approach taken? Why are the specific results
+% significant? The story is not what you did, but rather:
 %  - what you show, new ideas, new insights
 %  - why interesting, important?
 % State your contributions: these drive the entire paper.  Contributions
 % should be refutable claims, not vague generic statements.
 
-In this paper, we ...
+In this paper we develop an appropriate set of transport services and APIs
+for real-time applications.
+Then, we demonstrate that it is possible to realise these services and APIs
+in the context of both TCP and UDP, despite the limitations imposed by the
+legacy protocols, middleboxes, and ossification of the network. 
+We present initial results to show that, despite the observed ossification,
+the network has the flexibility to deploy new transport protocols, if care
+is taken to reinterpret layer boundaries and deploy those new transports in
+the context of TCP and UDP.
 
-% para. 4: how different/better/relates to other work
+% Paragraph 4: What are the differences between your work, and what others
+% have done? Keep this at a high level, as you can refer to future sections
+% where specific details and differences will be given, but it is important
+% for the reader to know what is new about this work compared to other work
+% in the area.
 
+Our contributions are ...
+A discussion of the needs of real-time applications, and the appropriate
+transport services and APIs to support those needs.
+An outline of how those transport services can be realised over in the
+context of UDP and TCP.
+Preliminary deployments results, to show that there is the possibility
+that these services are usable in the public Internet. 
 
-
-% para. 5: "We structure the remainder of this paper as follows."
+% Paragraph 5: "We structure the remainder of this paper as follows." Give
+% the reader a road-map for the rest of the paper. Try to avoid redundant
+% phrasing, "In Section 2, In section 3, ..., In Section 4, ... ", etc.
 
 We structure the remainder of this paper as follows.
 
 %==================================================================================================
-% Concentrate single-mindedly on a narrative that:
-%  - Describes the problem, and why it's interesting
-%  - Describes your idea
-%  - Defends your idea, showing how it solves the problem, and filling out
-%    the details
-% On the way, cite relevant work in passing, but defer discussion to the
-% end.
-%
-% Introduce the problem, and your idea, using examples, and only then
-% present the general case. Explain the idea as if your were speaking to
-% someone using a whiteboard. Conveying the intuition is primary; details
-% follow. Write in a top down manner: state broad themes and ideas first,
-% then go into details.
-%
-% The introduction makes claims. The body of the paper provides evidence
-% to support each claim. Check each claim in the introduction, identify
-% the evidence, and forward-reference it from the claim. 
-%==================================================================================================
-\section{}
+\section{Real-time Transport Services}
 
-% The problem
+...discussion of APIs and transport services for real-time applications
 
+- deadlines
+- partial reliability
+- application-level framing and ADUs
+- sub-streams
+- etc.
 
+what a conceptual API for this would look like
 
 %==================================================================================================
-\section{}
+\section{Innovation and Ossification}
 
-% My idea
+Briefly discuss: the Internet architecture, in principle, allows free
+innovation at the transport layer, provided the IP layer is unchanged. 
+Outline why this is not true in practice. 
 
+Implication: new protocols must look like TCP or UDP.
 
+UDP is the obvious choice, since it provides minimal additional services
+over the IP layer, allowing great flexibility in innovation for protocols
+tunnelled on top. Only real cost is a few bytes of additional header.
+
+But, UDP is often blocked. Corporate firewalls. History of abuse for DDoS
+attacks (draft-byrne-opsec-udp-advisory-00). Slowly changing, e.g., due to
+QUIC, WebRTC, but not clear that UDP is universally available.
+
+TCP is a more complex choice for innovation. More sophisticated protocol.
+Complex headers. Mandates much more behaviour. 
+
+However:
+- end-points can change congestion control, provided it's ACK-based
+- segments need be sent with contiguous sequence number space, resending
+  segments to fill gaps in sequence number space caused by packet loss
+- traditional API is restrictive, but flexibility to do out-of-order 
+  delivery to applications
+- easy to perform consistent segmentation on sending, and add COBS framing, 
+  to get message-oriented semantics
+
+Main issue with adding what we need is reliability. 
+Leads to the question: can we work-around TCP reliability?
 
 %==================================================================================================
-\section{}
+\section{Partial Reliability and TCP}
 
-% The details
+approach: 
+- separate out sequence numbers in sent segments with sequence numbers
+  visible to the application.
+- COBS encode for message boundaries.
+- retransmission have same segment sequence number, but different contents
+  and application sequence numbers
 
-% Describe results carefully:
-%  - clearly state assumptions
-%  - give enough information to allow the reader to recreate the results
-%  - ensure results are representative; statistically meaningful, etc.
-%  - don't overstate results
-%  - equally, don't understate them: consider the broader implications
+Does it work?
+- Initial deployment results from the UK
+- Is there any more data that can be got quickly?
 
+Any other surveys showing the same thing?
 
+%==================================================================================================
+\section{Realising Transport Services}
+
+Assuming the above is true more generally, once wider measurements have
+been conducted...
+
+here is an abstract API for real-time transport services
+
+we can clearly layer it above UDP: the services look a lot like PR-SCTP,
+and experiences with the WebRTC data channel show that this can run over
+UDP and be deployed in the wild.
+
+we also assert that these services can be deployed over TCP. How? TCP
+Hollywood offers a prototype. 
+brief summary.
+obviously we need to change TCP congestion control too.
 
 %==================================================================================================
 \section{Related Work}
@@ -203,7 +269,16 @@ We structure the remainder of this paper as follows.
 %==================================================================================================
 \section{Conclusions}
 
+to make effective use of the network, need to deploy new transport services
+and protocols
 
+seems likely that the appropriate long-term approach for doing this is to
+repurpose UDP as a demultiplexing layer for higher-layer protocols. 
+
+in the short term, we need to deal with networks that block UDP, and be
+able to run over TCP.
+our initial work shows that this is frequently possible, and works well
+enough to offer benefit.
 
 %==================================================================================================
 \section{Acknowledgements}
