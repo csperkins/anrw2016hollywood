@@ -95,36 +95,14 @@ blank_line
 # The first call to gs tries to embed all fonts. This should turn any
 # non-embedded fonts, of any type, into embedded Type 1 fonts, without
 # subsetting.
-echo "Post-processing PDF file... (1/3)"
+echo "Post-processing PDF file..."
 gs -q -dSAFER -dNOPAUSE -dBATCH -dCompatibilityLevel=1.4 -dDetectDuplicateImages=true \
    -dPDFSETTINGS=/prepress -dEmbedAllFonts=true -dSubsetFonts=false \
-   -sDEVICE=pdfwrite -sOutputFile=$TEX_BASE.tmp-a.pdf \
+   -sDEVICE=pdfwrite -sOutputFile=$TEX_BASE.tmp.pdf \
    -f $TEX_BASE.pdf
 
-# The second call to gs tries to un-embed any fonts in the PDF. If any
-# included image files have unwanted embedded fonts in TrueType format, 
-# this will turn them into non-embedded TrueType fonts.
-echo "Post-processing PDF file... (2/3)"
-gs -q -dSAFER -dNOPAUSE -dBATCH -dCompatibilityLevel=1.4 -dDetectDuplicateImages=true \
-   -dPDFSETTINGS=/prepress -dEmbedAllFonts=false -dSubsetFonts=false \
-   -sDEVICE=pdfwrite -sOutputFile=$TEX_BASE.tmp-b.pdf \
-   -c ".setpdfwrite <</AlwaysEmbed [ ]>> setdistillerparams" \
-   -f $TEX_BASE.tmp-a.pdf
-
-# The third call to gs tries to embed all fonts. This should turn any
-# non-embedded fonts, of any type, into embedded Type 1 fonts, and will
-# subset those fonts to include only the used characters, reducing the
-# size of the file.
-echo "Post-processing PDF file... (3/3)"
-gs -q -dSAFER -dNOPAUSE -dBATCH -dCompatibilityLevel=1.4 -dDetectDuplicateImages=true \
-   -dPDFSETTINGS=/prepress -dEmbedAllFonts=true -dSubsetFonts=true \
-   -sDEVICE=pdfwrite -sOutputFile=$TEX_BASE.tmp-c.pdf \
-   -f $TEX_BASE.tmp-b.pdf
-
-cat $TEX_BASE.tmp-c.pdf > $TEX_BASE.pdf
-rm  -f $TEX_BASE.tmp-a.pdf 
-rm  -f $TEX_BASE.tmp-b.pdf 
-rm  -f $TEX_BASE.tmp-c.pdf 
+cat $TEX_BASE.tmp.pdf > $TEX_BASE.pdf
+rm  -f $TEX_BASE.tmp.pdf 
 
 blank_line
 
