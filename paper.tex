@@ -239,10 +239,12 @@ we can clearly layer it above UDP: the services look a lot like PR-SCTP,
 and experiences with the WebRTC data channel show that this can run over
 UDP and be deployed in the wild.
 
-we also assert that these services can be deployed over TCP. How? TCP
-Hollywood offers a prototype. 
-brief summary.
-obviously we need to change TCP congestion control too.
+these services are deployed over TCP now, but have an inconvenient API that
+imposes lots of work on application developers, and with higher than desired
+latency. 
+TCP Hollywood offers a way to fix both issues.
+Brief summary.
+Obviously we need to change TCP congestion control too.
 
 %==================================================================================================
 \section{Related Work}
