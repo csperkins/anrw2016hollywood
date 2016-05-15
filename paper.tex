@@ -120,11 +120,13 @@ In practice, the only protocols that can be widely used in the Internet are
 TCP and UDP. Other protocols are blocked by firewalls and other middleboxes.  
 TCP provides sophisticated congestion control, coupled with a reliable,
 ordered, byte stream API. These are suitable for many applications, but are
-not necessarily appropriate for real-time traffic.  UDP exposes essentially
-the raw IP packet delivery service, offering flexibility to develop new
-protocols, but at the cost of requiring completely new protocol mechanisms
-to be defined. While both protocols are usable for real-time applications,
-neither really provides the right services and API.
+not necessarily appropriate for real-time traffic.  UDP exposes the best-effort 
+IP packet delivery service, offering flexibility to develop new protocols,
+but at the cost of requiring completely new protocol mechanisms to be
+defined. Both protocols are usable for real-time applications, but neither
+really provides the right services and API.  This forces each application
+to re-invent mechanisms that should be provided by the transport, increasing 
+costs and complexity, raising barriers to innovation.
 
 % Paragraph 3: "In this paper, we show that...". This is the key paragraph
 % in the introduction - you summarize, in one paragraph, what are the main
@@ -136,9 +138,9 @@ neither really provides the right services and API.
 % State your contributions: these drive the entire paper.  Contributions
 % should be refutable claims, not vague generic statements.
 
-In this paper we develop an appropriate set of transport services and APIs
+In this paper we discuss the appropriate set of transport services and APIs
 for real-time applications.
-Then, we demonstrate that it is possible to realise these services and APIs
+We demonstrate that it is possible to realise these services and APIs
 in the context of both TCP and UDP, despite the limitations imposed by the
 legacy protocols, middleboxes, and ossification of the network. 
 We present initial results to show that, despite the observed ossification,
@@ -152,22 +154,33 @@ the context of TCP and UDP.
 % for the reader to know what is new about this work compared to other work
 % in the area.
 
-Our contributions are ...
-A discussion of the needs of real-time applications, and the appropriate
-transport services and APIs to support those needs.
-An outline of how those transport services can be realised over in the
-context of UDP and TCP.
-Preliminary deployments results, to show that there is the possibility
-that these services are usable in the public Internet. 
+Our contributions are to identify the needs of real-time applications, and
+the appropriate transport services and APIs to support those needs; 
+to illustrate how those transport services can be realised on the current
+Internet, in the context of UDP and TCP deployments; and 
+to present some initial measurement results to show that the mechanisms we
+propose ought to be usable in the public Internet. 
 
 % Paragraph 5: "We structure the remainder of this paper as follows." Give
 % the reader a road-map for the rest of the paper. Try to avoid redundant
 % phrasing, "In Section 2, In section 3, ..., In Section 4, ... ", etc.
 
-We structure the remainder of this paper as follows.
+We begin, in Section \ref{sec:services} by discussing transport services 
+for real-time applications, and outlining the common conceptual API that
+those applications use. 
+This is followed, in Section \ref{sec:ossification}, by a review of the
+deployment considerations for new protocols, caused by ossification of
+the network, with Section \ref{sec:partial} considering, in particular, how
+TCP reliability semantics can evolve within the constraints of the deployed
+infrastructure.
+Section \ref{sec:realising} outlines how the transport services we have
+identified can be realised in practical networks.
+Finally, Section \ref{sec:related} discusses related work, and Section
+\ref{sec:conclusions} concludes.
 
 %==================================================================================================
 \section{Real-time Transport Services}
+\label{sec:services}
 
 ...discussion of APIs and transport services for real-time applications
 
@@ -181,6 +194,7 @@ what a conceptual API for this would look like
 
 %==================================================================================================
 \section{Innovation and Ossification}
+\label{sec:ossification}
 
 Briefly discuss: the Internet architecture, in principle, allows free
 innovation at the transport layer, provided the IP layer is unchanged. 
@@ -213,6 +227,7 @@ Leads to the question: can we work-around TCP reliability?
 
 %==================================================================================================
 \section{Partial Reliability and TCP}
+\label{sec:partial}
 
 approach: 
 - separate out sequence numbers in sent segments with sequence numbers
@@ -229,6 +244,7 @@ Any other surveys showing the same thing?
 
 %==================================================================================================
 \section{Realising Transport Services}
+\label{sec:realising}
 
 Assuming the above is true more generally, once wider measurements have
 been conducted...
@@ -248,6 +264,7 @@ Obviously we need to change TCP congestion control too.
 
 %==================================================================================================
 \section{Related Work}
+\label{sec:related}
 
 % This should come near the end, and focussing on discussing how your work
 % relates to that of others. Any relevant related work should have been
@@ -270,6 +287,7 @@ Obviously we need to change TCP congestion control too.
 
 %==================================================================================================
 \section{Conclusions}
+\label{sec:conclusions}
 
 to make effective use of the network, need to deploy new transport services
 and protocols
