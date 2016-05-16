@@ -300,6 +300,13 @@ API between transport and application be structured?
 
 \todo{Stephen: outline the TCP Hollywood API, with text and a figure}
 
+\begin{figure}
+  \centering
+  ...
+  \caption{Outline transport API for real-time applications}
+  \label{fig:api}
+\end{figure}
+
 It is to be noted that this API is not dissimilar to the PR-SCTP abstract
 API. \todo{CSP: check this}
 
@@ -307,31 +314,81 @@ API. \todo{CSP: check this}
 \section{Innovation and Ossification}
 \label{sec:ossification}
 
-Briefly discuss: the Internet architecture, in principle, allows free
-innovation at the transport layer, provided the IP layer is unchanged. 
-Outline why this is not true in practice. 
+The Internet architecture, in principle, allows free innovation at the
+transport layer, provided the underlying network (IP) layer is unchanged.  
+Routers should inspect the source addresses of packets to perform network
+ingress filtering \cite{RFC2827}, and the destination addresses to route
+packets to the correction destination, but should not inspect their
+contents. This is not, of course, how the real network operates. 
 
-Implication: new protocols must look like TCP or UDP.
+\todo{outline why this is not true in practice}
 
-UDP is the obvious choice, since it provides minimal additional services
-over the IP layer, allowing great flexibility in innovation for protocols
-tunnelled on top. Only real cost is a few bytes of additional header.
+The implication of this reality is that it is difficult to deploy new 
+transport protocols. The installed base of NATs, firewalls, and other
+middleboxes is such that packets that do not look like TCP or UDP are
+unlikely to pass the network. We may innovate all we like, provided the
+transport of the future looks like TCP or UDP to middleboxes.\footnote{
+  This is inconvenient, certainly, but is not necessarily a bad thing. 
+  The Internet is critical infrastructure. It support emergency services, 
+  healthcare applications, infrastructure components, financial services, 
+  and so on, many of which are essential to the functioning of society. 
+  Making changes to this type of infrastructure \emph{should} require 
+  careful backwards compatibility.
+}
 
-But, UDP is often blocked. Corporate firewalls. History of abuse for DDoS
-attacks (draft-byrne-opsec-udp-advisory-00). Slowly changing, e.g., due to
-QUIC, WebRTC, but not clear that UDP is universally available.
+UDP is the obvious base for future protocol development, since it provides
+minimal additional services over the IP layer, allowing great flexibility
+in innovation for protocols tunnelled on top. Provided middleboxes do not
+inspect the payload too carefully, the only real cost to innovation, when
+compared to a native transport protocol running over IP, is a few bytes of
+additional header. Examples in this space include RTP \cite{RFC3550}, one
+of the most widely deployed real-time transport protocols; the WebRTC Data
+Channel \cite{}, which tunnels peer-to-peer SCTP associations over a DTLS
+association over UDP; and QUIC \cite{}, which provides a modern alternative 
+to TCP, implemented over UDP. 
 
-TCP is a more complex choice for innovation. More sophisticated protocol.
-Complex headers. Mandates much more behaviour. 
+Despite these advantages, UDP can be problematic as a substrate for new
+protocol development. UDP traffic is blocked by some enterprise firewalls,
+and some in the operations community have a strong distrust of UDP-based
+protocols and applications \cite{draft-byrne-opsec-udp-advisory-00}. In
+part this is due to ignorance. Outside specific niches, such as DNS, UDP
+has not been widely used in enterprise environments, and hence is widely
+misunderstood. Blocking the unknown is a rational response. In addition,
+UDP traffic has been widely used as a component of distributed denial of
+service (DDoS) attacks, leading some to install blanket blocks of UDP as 
+a safety measure (blanket blocking, rather than the more targeted blocks 
+used when TCP traffic is used in DDoS attacks, are justified using the
+argument that UDP is not widely used).
+These issues are slowly changing, as UDP-based applications penetrate the
+enterprise consciousness, but not clear that UDP is universally available
+(Google report XX\% \todo{how much?} of endpoints are reachable with QUIC
+running over UDP \cite{}). 
 
-However:
-- end-points can change congestion control, provided it's ACK-based
-- segments need be sent with contiguous sequence number space, resending
-  segments to fill gaps in sequence number space caused by packet loss
+TCP is a more complex choice for innovation. It is a more sophisticated 
+protocol than UDP, with complex headers, and a protocol state machine
+that mandates much more behaviour and is widely understood, and policed,
+by in-network middleboxes. This does not mean that TCP cannot evolve, or
+form the basis for new transport services. Rather, it means that any
+innovation or development must be done carefully, paying very careful
+attention to backwards compatibility.
+
+We identify a number of places where TCP can evolve with comparative
+freedom. 
+Firstly, the TCP congestion control algorithm is executed by the end
+points, and can be changed provided the new version requires no new
+information to be exchanged. 
+\todo{expand, and discuss how this evolution has occurred to date}
+
+Then, we note that the API that is exposed to applications using TCP is
+not visible to the network. 
 - traditional API is restrictive, but flexibility to do out-of-order 
   delivery to applications
+
 - easy to perform consistent segmentation on sending, and add COBS framing, 
   to get message-oriented semantics
+
+- segments need be sent with contiguous sequence number space, resending
+  segments to fill gaps in sequence number space caused by packet loss
 
 Main issue with adding what we need is reliability. 
 Leads to the question: can we work-around TCP reliability?
