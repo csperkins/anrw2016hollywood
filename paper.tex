@@ -19,7 +19,7 @@
 \usepackage{color}
 \usepackage{balance}
 
-\newcommand{\todo}[1]{\textbf{\textcolor{red}{To do: #1}}}
+\newcommand{\todo}[1]{\textbf{\textcolor{red}{To do -- #1}}}
 
 %==================================================================================================
 % The following information gets written into the PDF file information:
@@ -260,8 +260,48 @@ that cannot be used, because it depends on previous data that was lost.
    Better user experience to adapt to fit the channel, rather than recover
    from loss after the channel discards packets that don't fit. 
 
+We note that a connection-oriented transport is not a core requirement for
+many real-time multimedia applications.  Indeed, flexibility to change the
+destination of data within a call could be beneficial for applications that
+support mobile users, or for some forms of multiparty session. However, to
+support NAT traversal and to help dynamically manage firewall pinholes, it
+is often desirable for the transport to be connection oriented. We find
+these concerns outweigh the benefits of connectionless transport, and so
+add a requirement for connection oriented service. 
+Similarly, while not strictly needed by the applications, it is beneficial
+if the transport provides a keep-alive service to refresh NAT and firewall
+bindings if the application goes silent. 
 
-..what a conceptual API for this would look like?
+Table \ref{tab:services} summarises the transport services required for
+real-time multimedia applications.
+
+\begin{table}
+  \centering
+  \begin{tabular}{ll}
+    \toprule
+      Transport Service     & Requirement \\
+    \midrule
+      Deadlines             & Core        \\
+      Partial reliability   & Core        \\
+      Dependencies          & Core        \\
+      Message-oriented      & Core        \\
+      Sub-streams           & Core        \\
+      Congestion controlled & Core        \\
+      Connection oriented   & Subsidiary  \\
+      Keep-alive            & Subsidiary  \\
+    \bottomrule
+  \end{tabular}
+  \caption{Transport services required for real-time multimedia}
+  \label{tab:services}
+\end{table}
+
+Given a transport protocol that provides the above services, how could the
+API between transport and application be structured? 
+
+\todo{Stephen: outline the TCP Hollywood API, with text and a figure}
+
+It is to be noted that this API is not dissimilar to the PR-SCTP abstract
+API. \todo{CSP: check this}
 
 %==================================================================================================
 \section{Innovation and Ossification}
