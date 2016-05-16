@@ -373,25 +373,35 @@ innovation or development must be done carefully, paying very careful
 attention to backwards compatibility.
 
 We identify a number of places where TCP can evolve with comparative
-freedom. 
-Firstly, the TCP congestion control algorithm is executed by the end
-points, and can be changed provided the new version requires no new
-information to be exchanged. 
+freedom. These include congestion control, the end-point API, and data
+segmentation. If care is taken, there is also the possibility to change
+the reliability semantic. 
+
+The TCP congestion control algorithm is executed by the end points, and 
+can be changed, provided the new version requires no new information to 
+be exchanged. 
 \todo{expand, and discuss how this evolution has occurred to date}
+We note that, while standardised TCP congestion control has followed the
+goal of maximising throughput at the expense of latency and variability,
+this is not required by the protocol. TCP Vegas \cite{brakmo:1994:tcp-vegas}
+is perhaps the best known approach that changes these constraints, with a
+delay-based algorithm that reduces latency. It would also be possible to
+implement alternatives that seek stability, or compatibility with the
+dictates of a video codec, rather than the traditional ``TCP Friendly''
+congestion control -- even if implemented within TCP.
 
-Then, we note that the API that is exposed to applications using TCP is
-not visible to the network. 
-- traditional API is restrictive, but flexibility to do out-of-order 
-  delivery to applications
+The API that is exposed to applications using TCP is not visible to the
+network, and can be changed. 
+\todo{discuss how the API can be relaxed to allow out-of-order delivery}
+\todo{discuss how the API can be modified to accept/delivery a sequence
+      of messages, rather than a byte stream, and how with consistent
+      segmentation at the sender and COBS framing, this can be efficient}
 
-- easy to perform consistent segmentation on sending, and add COBS framing, 
-  to get message-oriented semantics
-
-- segments need be sent with contiguous sequence number space, resending
-  segments to fill gaps in sequence number space caused by packet loss
-
-Main issue with adding what we need is reliability. 
-Leads to the question: can we work-around TCP reliability?
+These changes could address many of the transport service needs we have for
+real-time applications, but still leave a critical issue of how to improve
+timing behaviour. Specifically, how to enable partial reliability for TCP,
+after which it is possible to layer-on support for managing deadlines and 
+dependencies.
 
 %==================================================================================================
 \section{Partial Reliability and TCP}
