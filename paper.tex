@@ -183,7 +183,7 @@ Finally, Section \ref{sec:related} discusses related work, and Section
 \label{sec:services}
 
 In the IETF, the Transport Services (TAPS) working group is chartered to 
-(1) develop a taxonomy of \emph{transport services}, i.e., to identify the
+(1) develop a taxonomy of \emph{transport services}. That is, to identify the
 features that comprise, and can be combined, to form complete transport
 protocols; and (2) to develop an abstract API for applications to request
 desirable services, allowing the system to select an appropriate transport
@@ -191,51 +191,53 @@ protocol based on application needs. It is hoped that this will loosen the
 coupling between application and transport, so enabling deployment of new 
 transport protocols.
 
-...TAPS is valuable, because it gives us a vocabulary for discussing the
-   components of transport protocols, that we can use to identify the needs
-   of real-time applications
+The work in TAPS is valuable, because it gives us a vocabulary for
+discussing the components of transport protocols.  We can then use that
+vocabulary when discussing the needs of real-time applications, and the
+protocols needed to support those needs.
 
-...the key feature of such applications is clearly timing. That is, since
-   these applications convey real-time data, they all have some concept 
-   of a \emph{deadline} by which that data must be presented, after which it 
-   becomes useless. 
-   the deadline might be short or long. Interactive applications, such as
-   telephony, video conferencing, or telepresence, require low end-to-end
-   latency, with the deadline for presenting data being tens, or perhaps
-   low hundreds, of milliseconds after it was generated. Non-interactive
-   applications, such as broadcast TV, may have deadlines in the order of
-   seconds, or even tens of seconds for on-demand programming. 
-   These deadlines are unusual for real-time systems, in that they are
-   simultaneously flexible and strict: flexible in that the exact value
-   of the deadline is typically not important, provided it is of the 
-   right order-of-magnitude for the application, but strict in that 
-   any particular deadline provides a hard cut-off, after which the
-   data is useless. 
+The essential feature of real-time applications is clearly timing. That is,
+since these applications convey real-time data, they all have some concept
+of a \emph{deadline} by which that data must be presented, after which it
+becomes useless. 
+The deadline might be short or long. Interactive applications, such as
+telephony, video conferencing, or telepresence, require low end-to-end
+latency, with the deadline for presenting the media (playing the audio,
+displaying the video frame) being tens, or perhaps low hundreds, of
+milliseconds after it was captured. Non-interactive applications, such as
+broadcast TV, may have deadlines in the order of seconds, or even tens of
+seconds for on-demand programming. 
+The deadlines in many networked multimedia applications are unusual when
+compared to other real-time systems. They are simultaneously flexible and
+strict: flexible in that the exact value of the deadline is typically not
+important, provided it is of the right order-of-magnitude for the
+application, but strict in that any particular deadline provides a hard
+cut-off, after which the data is useless. 
 
-...the presence of deadlines, in a network that offers only a best-effort
-   packet deliver service, implies that the transport must provide only
-   \emph{partial reliability}.
-   the network must be assumed to have non-zero probability of losing any
-   particular packet. If FEC is used to repair loss, this implies there is
-   always some probability that a particular packet will be non-recoverable. 
-   If retransmission is used to repair loss, this implies that there is
-   always the potential of unbounded delay. 
-   These probabilities can be estimated and bounded, but will be non-zero.
-   Accordingly, to meet deadlines, the transport must offer a partial
-   reliability service. 
-   Many real-time applications run over TCP today, and TCP does not offer
-   this service. This results in occasional play-out stalls, when the
-   transport blocks the application. These are one of the primary causes
-   of poor user experience in streaming applications, and this is directly
-   caused by the lack of partial reliability. Missing one frame that has
-   not been delivered by its deadline is much less disruptive than a stall
-   in play-out. 
+The presence of deadlines, in a network that offers only a best-effort
+packet deliver service, implies that the transport must provide
+\emph{partial reliability}.
+The network has non-zero probability of losing any particular packet. 
+If forward error correction is used to repair loss, this implies there is
+always some probability that a particular packet will be non-recoverable.
+If retransmission is used to recover from losses, there is the potential 
+for unbounded delay, since any retransmission may itself be lost. 
+These probabilities can be estimated, to give probabilistic constraints
+on loss and delay, but will be non-zero. Accordingly, to meet deadlines,
+the transport must support partial reliability service, accepting that
+it may not be able to deliver all data by its deadline.
+Many real-time applications run over TCP today, and TCP does not offer a
+partial reliability service. This results in occasional play-out stalls, 
+when the transport blocks the application because a retransmission takes
+too long. These stalls are one of the primary causes of poor user
+experience in streaming applications, and are directly caused by the lack
+of partial reliability in TCP. Missing one frame that has not been
+delivered by its deadline is much less disruptive than a stall in play-out. 
 
-...given deadlines and partial reliability, the next important transport
-   service is \emph{dependency management}. There is no point sending
-   data that cannot be used, because it depends on previous data that
-   was lost. 
-   complex trade-off, since you might want to send data that misses its 
+Given deadlines and partial reliability, the next important transport
+service is \emph{dependency management}. There is no point sending data
+that cannot be used, because it depends on previous data that was lost. 
+...complex trade-off, since you might want to send data that misses its 
    deadline, if it allows later data to be used. 
 
 ...following from this, we have the concept of application-level framing
