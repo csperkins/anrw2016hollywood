@@ -308,7 +308,8 @@ API between transport and application be structured?
 \end{figure}
 
 It is to be noted that this API is not dissimilar to the PR-SCTP abstract
-API. \todo{CSP: check this}
+API, which provides \textit{timed reliability}, using a ``lifetime''
+specified by the application. \todo{CSP: check this}
 
 %==================================================================================================
 \section{Innovation and Ossification}
@@ -361,8 +362,8 @@ used when TCP traffic is used in DDoS attacks, are justified using the
 argument that UDP is not widely used).
 These issues are slowly changing, as UDP-based applications penetrate the
 enterprise consciousness, but not clear that UDP is universally available
-(Google report XX\% \todo{how much?} of endpoints are reachable with QUIC
-running over UDP \cite{}). 
+(Google report 90-95\% of endpoints are reachable with QUIC
+running over UDP \cite{roskind2013quic}). 
 
 TCP is a more complex choice for innovation. It is a more sophisticated 
 protocol than UDP, with complex headers, and a protocol state machine
