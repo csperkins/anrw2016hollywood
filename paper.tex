@@ -334,7 +334,7 @@ transport of the future looks like TCP or UDP to middleboxes.\footnote{
   healthcare applications, infrastructure components, financial services, 
   and so on, many of which are essential to the functioning of society. 
   Making changes to this type of infrastructure \emph{should} require 
-  careful backwards compatibility.
+  careful backwards compatibility \cite{mcquistin:2015:reinterpreting}.
 }
 
 UDP is the obvious base for future protocol development, since it provides
@@ -408,18 +408,63 @@ dependencies.
 \section{Partial Reliability and TCP}
 \label{sec:partial}
 
-approach: 
-- separate out sequence numbers in sent segments with sequence numbers
-  visible to the application.
-- COBS encode for message boundaries.
-- retransmission have same segment sequence number, but different contents
-  and application sequence numbers
+Partial reliability (i.e., reliability conditional on timing and dependency
+information) can be implemented by relaxing TCP's reliability guarantee.
+The implication of this is that we need to offer a message-oriented
+abstraction to applications. If the arrival of a segment cannot be
+guaranteed, then it is not possible to offer a byte stream abstraction.
 
-Does it work?
-- Initial deployment results from the UK
-- Is there any more data that can be got quickly?
+To offer a message-oriented abstraction, the boundaries between each
+message must be maintained between sender and receiver. This means that a
+framing mechanism is required: it is not sufficient to send each message in
+a single segment, as this mapping will not necessarily be maintained by the
+network. A framing marker is added to the start and end of each message
+before transmission. An encoding algorithm is used to escape all occurences
+of the framing marker within the message data. This process does not impact
+on the data that can be sent or received by applications.
 
-Any other surveys showing the same thing?
+In order to maintain compatibility with middleboxes, offering partial
+reliability requires using \emph{inconsistent retransmissions}. This means
+that the mapping between message data and TCP sequence numbers is no longer
+static: a given TCP sequence number may be relate to different messages at
+different times. Therefore, an application-level sequence number is
+required to allow messages to be uniquely identified.
+
+When a TCP segment is to be retransmitted, the current mapping between its
+sequence number and application-level sequence numbers is used to determine
+which messages within the segment are to be retransmitted. A liveness check
+is performed on these messages, to determine that (i) the message will
+arrive on time to be played out; and (ii) the message does not depend on an
+expired message. For (i), we combine the time that the message has spent in
+a sending queue, with an estimate of the round-trip time and the current
+play-out delay. This is then compared against the lifetime of the message,
+as expressed by the application. For (ii), we maintain metadata about
+sequence numbers that have expired, and check this metadata for the
+dependency expressed by the application.
+
+This mechanism -- inconsistent retransmissions -- is visible to middleboxes
+on the network that are performing payload inspection. These middleboxes
+may interpret this behaviour relating to an attack. For example, a
+man-on-the-side attack exhibits similar behaviour, where a malicious host
+is injecting data into an existing TCP flow. As a result, our connection
+may be disrupted. Honda et al. \cite{honda:2011:extend-tcp} conducted
+experiments across 135 paths on the Internet, to determine support for
+inconsistent retransmissions. The observed that the majority of paths
+delivered inconsistent retransmissions successfully. On Port 80 (HTTP), the
+original segment was delivered on 7\% of paths tested. Only one connection
+reset was observed. We conducted further deployability experiments using
+inconsistent retransmissions \cite{mcquistin2016hollywood}, and found that
+fixed-line networks delivered inconsistent retransmissions successfully,
+but that delivery of the original segment was common on cellular networks.
+
+These deployability experiments suggest that our protocol should be
+flexible: inconsistent retransmissions may not be delivered, and we should
+handle reception of the original segment. If the protocol detects that
+inconsistent retransmissions are not being delivered, then the mechanism
+can be disabled for the connection. Further, if a connection reset occurs,
+then the connection should be retried with the mechanism disabled.
+
+\todo{Add discussion on checksumming to maintain message integrity}
 
 %==================================================================================================
 \section{Realising Transport Services}
