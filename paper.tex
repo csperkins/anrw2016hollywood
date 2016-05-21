@@ -273,7 +273,29 @@ if the transport provides a keep-alive service to refresh NAT and firewall
 bindings if the application goes silent. 
 
 Table \ref{tab:services} summarises the transport services required for
-real-time multimedia applications.
+real-time multimedia applications. From this set of services, Table
+\ref{tab:api} gives an outline API. As shown, the connection primitives
+are the same as those of TCP. Hosts setup and teardown sockets using 
+\texttt{create\_socket()} and \texttt{close\_socket()}. Servers
+\texttt{bind()} to an address they wish to accept connections from, they
+\texttt{listen()} on for incoming connections, and they \texttt{accept()}
+an incoming connection. Clients \texttt{connect()} to a server.
+
+The message-oriented service is exposed by the \texttt{send\_message()}
+and \texttt{receive\_message()} functions. When sending messages,
+applications specify a sequence number. Applications
+set the receiver's play-out delay, using \texttt{set\_po\_delay()}, in
+milliseconds. This is sent to the sender, for use as part of the deadline
+estimation. The sender attaches a \texttt{lifetime} to each message,
+which is combined with an estimate of the current round-trip-time, and the
+time that the message has spent in the sending buffer, to determine if a
+message will arrive within its lifetime. A message that won't arrive
+within its lifetime is considered to have \emph{expired}. Applications
+specify the application-level sequence number of a message they depend on
+(\texttt{depends\_on}). If the message depends on a message that has
+expired, then it too is considered to have expired. The partial
+reliability service follows from the deadline and dependency services:
+messages will be reliably transmitted until they expire.
 
 \begin{table}
   \centering
@@ -295,17 +317,43 @@ real-time multimedia applications.
   \label{tab:services}
 \end{table}
 
-Given a transport protocol that provides the above services, how could the
-API between transport and application be structured? 
-
-\todo{Stephen: outline the TCP Hollywood API, with text and a figure}
-
-\begin{figure}
+\begin{table}
   \centering
-  ...
+  \begin{tabular}{ll}
+    \toprule
+      Function & Parameters \\
+    \midrule
+      \texttt{create\_socket} &  \\
+      \texttt{close\_socket} & \texttt{sd} -- Socket descriptor \\
+    \midrule
+      \texttt{bind} & \texttt{sd} -- Socket descriptor \\
+                    & \texttt{addr} -- Address to bind to \\
+                    & \texttt{addrlen} -- Length of \texttt{addr} \\
+      \texttt{listen} & \texttt{sd} -- Socket descriptor \\
+            \texttt{accept} & \texttt{sd} -- Socket descriptor \\
+                    & \texttt{addr} -- Address of peer \\
+                    & \texttt{addrlen} -- Length of \texttt{addr} \\
+      \texttt{connect} & \texttt{addr} -- Address to connect to \\
+                    & \texttt{addrlen} -- Length of \texttt{addr} \\
+    \midrule
+      \texttt{set\_po\_delay} & \texttt{delay} -- Playout delay (in ms) \\
+    \midrule
+      \texttt{send\_message} & \texttt{sd} -- Socket descriptor \\
+      & \texttt{buf} -- Message data \\
+      & \texttt{len} -- Length of message data \\
+      & \texttt{seq\_num} -- Sequence number \\
+      & \texttt{lifetime} -- Lifetime of message (in ms) \\ 
+      & \texttt{depends\_on} -- \texttt{seq\_num} of dependency \\
+      & \texttt{substream} -- Substream identifier \\
+      \texttt{receive\_message} & \texttt{sd} -- Socket descriptor \\
+      & \texttt{buf} -- Buffer for message data \\
+      & \texttt{len} -- Size of \texttt{buf} \\
+      & \texttt{substream} -- Substream identifier \\
+    \bottomrule
+  \end{tabular}
   \caption{Outline transport API for real-time applications}
-  \label{fig:api}
-\end{figure}
+  \label{tab:api}
+\end{table}
 
 It is to be noted that this API is not dissimilar to the PR-SCTP abstract
 API, which provides \textit{timed reliability}, using a ``lifetime''
@@ -367,6 +415,8 @@ running over UDP \cite{roskind2013quic}, but it is not clear that the set
 of hosts running their Chrome browser is representative of all Internet
 environments). 
 
+\todo{Other motivation for using TCP: HTTP-based streaming protocols}
+
 TCP is a more complex choice for innovation. It is a more sophisticated 
 protocol than UDP, with complex headers, and a protocol state machine
 that mandates much more behaviour and is widely understood, and policed,
@@ -394,8 +444,16 @@ dictates of a video codec, rather than the traditional ``TCP Friendly''
 congestion control -- even if implemented within TCP.
 
 The API that is exposed to applications using TCP is not visible to the
-network, and can be changed. 
-\todo{discuss how the API can be relaxed to allow out-of-order delivery}
+network, and can be changed. Relaxing the API to enable the out-of-order
+delivery of segments is trivial: segments are delivered to the application
+in the order that they arrive, with their TCP sequence attached. The TCP
+sequence number can be passed to the application using the existing
+Berkeley sockets API, either with the received data, or using 
+\texttt{getsockopt()}. Out-of-order delivery is not useful when using a 
+byte-stream abstraction, and so the API should be further modified to
+provide a message-oriented abstraction. The Berkeley sockets API already
+supports such an abstraction for datagram protocols.
+
 \todo{discuss how the API can be modified to accept/delivery a sequence
       of messages, rather than a byte stream, and how with consistent
       segmentation at the sender and COBS framing, this can be efficient}
@@ -472,14 +530,16 @@ then the connection should be retried with the mechanism disabled.
 \section{Realising Transport Services}
 \label{sec:realising}
 
-Assuming the above is true more generally, once wider measurements have
-been conducted...
+While further measurement studies are required to determine the
+deployability of wire-visible changes to TCP (such as inconsistent
+retransmissions), we have shown that we can provide all of the transport 
+services needed by real-time applications, using either TCP or UDP. The
+API shown in Table \ref{tab:api} is largely similar to that PR-SCTP, which
+has seen real-world deployments within the WebRTC protocol, demonstrating
+that we can layer these services above UDP.
 
-here is an abstract API for real-time transport services
-
-we can clearly layer it above UDP: the services look a lot like PR-SCTP,
-and experiences with the WebRTC data channel show that this can run over
-UDP and be deployed in the wild.
+However, as described in Section \ref{sec:ossification}, there are
+deployability advantages to providing these services across TCP. 
 
 these services are deployed over TCP now, but have an inconvenient API that
 imposes lots of work on application developers, and with higher than desired
