@@ -523,7 +523,7 @@ message must be maintained between sender and receiver. This means that a
 framing mechanism is required: it is not sufficient to send each message in
 a single segment, as this mapping will not necessarily be maintained by the
 network. A framing marker is added to the start and end of each message
-before transmission. An encoding algorithm is used to escape all occurences
+before transmission. An encoding algorithm is used to escape all occurrences
 of the framing marker within the message data. This process does not impact
 on the data that can be sent or received by applications.
 
@@ -556,12 +556,15 @@ experiments across 135 paths on the Internet, to determine support for
 inconsistent retransmissions. The observed that the majority of paths
 delivered inconsistent retransmissions successfully. On Port 80 (HTTP), the
 original segment was delivered on 7\% of paths tested. Only one connection
-reset was observed. We conducted further deployability experiments using
+reset was observed. 
+
+We conducted further deployment experiments using
 inconsistent retransmissions \cite{mcquistin2016hollywood}, and found that
 fixed-line networks delivered inconsistent retransmissions successfully,
 but that delivery of the original segment was common on cellular networks.
+\todo{expand this}
 
-These deployability experiments suggest that our protocol should be
+These deployment experiments suggest that our protocol should be
 flexible: inconsistent retransmissions may not be delivered, and we should
 handle reception of the original segment. If the protocol detects that
 inconsistent retransmissions are not being delivered, then the mechanism
@@ -574,23 +577,44 @@ then the connection should be retried with the mechanism disabled.
 \section{Realising Transport Services}
 \label{sec:realising}
 
-While further measurement studies are required to determine the
-deployability of wire-visible changes to TCP (such as inconsistent
-retransmissions), we have shown that we can provide all of the transport 
-services needed by real-time applications, using either TCP or UDP. The
-API shown in Table \ref{tab:api} is largely similar to that PR-SCTP, which
-has seen real-world deployments within the WebRTC protocol, demonstrating
-that we can layer these services above UDP.
+While further measurement studies are required to confirm the ability to
+deploy wire-visible changes to TCP (such as inconsistent retransmissions),
+we have shown that we can provide all of the transport services needed by
+real-time applications, using either TCP or UDP. 
 
-However, as described in Section \ref{sec:ossification}, there are
-deployability advantages to providing these services across TCP. 
+Evidence that these services can be deployed above UDP exists in the form
+of the WebRTC data channel \cite{}.  
+\todo{expand}
 
-these services are deployed over TCP now, but have an inconvenient API that
-imposes lots of work on application developers, and with higher than desired
-latency. 
-TCP Hollywood offers a way to fix both issues.
-Brief summary.
-Obviously we need to change TCP congestion control too.
+\todo{also QUIC}
+
+% The API shown in Table \ref{tab:api} is largely similar to that PR-SCTP,
+% which has seen real-world deployments within the WebRTC protocol,
+% demonstrating that we can layer these services above UDP.
+
+Deployments using UDP are popular, and work well. However, as described in
+Section \ref{sec:ossification}, there are also reasons for providing these 
+services running over TCP. 
+\todo{
+  these services are deployed over TCP now, but have an inconvenient API that
+  imposes lots of work on application developers, and with higher than desired
+  latency. 
+  TCP Hollywood offers a way to fix both issues.
+  Brief summary.
+  Obviously we need to change TCP congestion control too.
+}
+
+Taken together, the wide experiences with the WebRTC Data Channel and QUIC
+demonstrate that the transport services necessary to support real-time
+traffic could be deployed running over UDP. Our work prototyping the TCP
+Hollywood protocol, and earlier measurements by Honda \emph{et al}.\
+\cite{} also suggest that deployment over TCP is possible.
+
+The challenge for the future is in combining such techniques below a common
+API, so that an application can transparently switch between UDP-based and
+TCP-based transport, depending on what is supported by the underlying
+network. This is the promise of the TAPS API, that we have shown ought to
+be feasible for real-time applications.
 
 %==================================================================================================
 \section{Related Work}
