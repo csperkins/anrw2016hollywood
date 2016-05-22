@@ -183,13 +183,16 @@ Finally, Section \ref{sec:related} discusses related work, and Section
 \label{sec:services}
 
 In the IETF, the Transport Services (TAPS) working group is chartered to 
-(1) develop a taxonomy of \emph{transport services}. That is, to identify the
+(1) develop a taxonomy of \emph{transport services}, that is, to identify the
 features that comprise, and can be combined, to form complete transport
 protocols; and (2) to develop an abstract API for applications to request
 desirable services, allowing the system to select an appropriate transport
 protocol based on application needs. It is hoped that this will loosen the
 coupling between application and transport, so enabling deployment of new 
 transport protocols.
+
+%--------------------------------------------------------------------------------------------------
+\subsection{Transport Services}
 
 The work in TAPS is valuable, because it gives us a vocabulary for
 discussing the components of transport protocols.  We can then use that
@@ -237,20 +240,20 @@ delivered by its deadline is much less disruptive than a stall in play-out.
 Given deadlines and partial reliability, the next important transport
 service is \emph{dependency management}. There is no point sending data
 that cannot be used, because it depends on previous data that was lost. 
-...complex trade-off, since you might want to send data that misses its 
-   deadline, if it allows later data to be used. 
+\todo{...complex trade-off, since you might want to send data that misses its 
+   deadline, if it allows later data to be used.}
 
-...following from this, we have the concept of application-level framing
+\todo{...following from this, we have the concept of application-level framing
    to make the best use of data, irrespective of losses. This implies that
    the transport provides a \emph{message oriented} service that respects
-   ADU boundaries. 
+   ADU boundaries.}
 
-...we note that many multimedia applications make use of multiple streams. 
+\todo{...we note that many multimedia applications make use of multiple streams. 
    For example, audio and video are logically separate, etc.
    can be supported by opening multiple transport connections, but
-   desirable to support a \emph{sub-stream} service to reduce overheads.
+   desirable to support a \emph{sub-stream} service to reduce overheads.}
 
-...finally, we note that \emph{congestion control} is important. 
+\todo{...finally, we note that \emph{congestion control} is important. 
    motivate: historically there has been a belief that real-time doesn't 
    do congestion control, needs an isochronous channel. 
    not practical for the Internet. 
@@ -258,7 +261,7 @@ that cannot be used, because it depends on previous data that was lost.
    Yes, there are some that need constant bandwidth and cannot adapt, but
    many are adaptive. 
    Better user experience to adapt to fit the channel, rather than recover
-   from loss after the channel discards packets that don't fit. 
+   from loss after the channel discards packets that don't fit. }
 
 We note that a connection-oriented transport is not a core requirement for
 many real-time multimedia applications.  Indeed, flexibility to change the
@@ -273,29 +276,67 @@ if the transport provides a keep-alive service to refresh NAT and firewall
 bindings if the application goes silent. 
 
 Table \ref{tab:services} summarises the transport services required for
-real-time multimedia applications. From this set of services, Table
-\ref{tab:api} gives an outline API. As shown, the connection primitives
-are the same as those of TCP. Hosts setup and teardown sockets using 
-\texttt{create\_socket()} and \texttt{close\_socket()}. Servers
-\texttt{bind()} to an address they wish to accept connections from, they
-\texttt{listen()} on for incoming connections, and they \texttt{accept()}
-an incoming connection. Clients \texttt{connect()} to a server.
+real-time multimedia applications. 
 
-The message-oriented service is exposed by the \texttt{send\_message()}
-and \texttt{receive\_message()} functions. When sending messages,
-applications specify a sequence number. Applications
-set the receiver's play-out delay, using \texttt{set\_po\_delay()}, in
-milliseconds. This is sent to the sender, for use as part of the deadline
-estimation. The sender attaches a \texttt{lifetime} to each message,
-which is combined with an estimate of the current round-trip-time, and the
-time that the message has spent in the sending buffer, to determine if a
-message will arrive within its lifetime. A message that won't arrive
-within its lifetime is considered to have \emph{expired}. Applications
-specify the application-level sequence number of a message they depend on
-(\texttt{depends\_on}). If the message depends on a message that has
-expired, then it too is considered to have expired. The partial
-reliability service follows from the deadline and dependency services:
-messages will be reliably transmitted until they expire.
+%--------------------------------------------------------------------------------------------------
+\subsection{Abstract API}
+
+Given the set of transport services outlined in Table \ref{tab:services}, 
+we sketch an abstract API in  Table \ref{tab:api}. The primitives divide
+into four categories:
+
+\begin{itemize}
+  \item Hosts setup and tear-down sockets using the \texttt{socket()}
+    and \texttt{close()} functions, as in the standard Berkeley sockets
+    API. 
+
+  \item The connection primitives are the same as those of TCP sockets.
+    Servers \texttt{bind()} to a particular address and port, then
+    \texttt{listen()} for and \texttt{accept()} incoming connections.
+    Clients \texttt{connect()} to a server.
+
+   \item Once the connection is established, the receiver application
+     indicates the media play-out delay it is using, in milliseconds, via
+     the \texttt{set\_po\_delay()} call. This specifies the time that the
+     application will buffer data, to compensate for network timing jitter,
+     before it is rendered to the user. The play-out delay is fed back to
+     the sender host, for use as part of the media deadline estimation. 
+    
+  \item Finally, message-oriented data transmission is exposed by the
+    \texttt{send\_message()} and \texttt{recv\_message()} functions.  
+    These expose a partially reliable message delivery service to the
+    application, framing data such that either a complete message is
+    delivered, or it is lost in its entirety. 
+
+    The \texttt{send\_message()} call takes four additional parameters
+    compared to the standard Berkeley Sockets API. These are 1) a message
+    sequence number, that can be used to re-order messages and detect 
+    message loss; 2) a relative deadline, which is combined with an
+    estimate of the current round-trip-time, and the time that the message
+    has spent in the sending buffer, to determine if a message will arrive
+    in time to be played-out; 3) the sequence number of any message on
+    which this depends, for example the sequence number of a video I-frame
+    on which a P-frame is predicted; and 4) a sub-stream identifier, used,
+    for example, to differentiate audio, video, sub-title, control, and
+    repair streams.
+
+    The \texttt{recv\_message()} call returns the sequence number,
+    dependency information, and sub-stream identifier along with any
+    received message, allowing the receiver to direct it to the correct
+    decoding queue. 
+
+    \todo{relate this to the transport services described earlier}
+
+\end{itemize}
+
+    
+A message that won't arrive within its lifetime is considered to have
+\emph{expired}. Applications specify the application-level sequence number
+of a message they depend on (\texttt{depends\_on}). If the message depends
+on a message that has expired, then it too is considered to have expired.
+The partial reliability service follows from the deadline and dependency
+services: messages will be reliably transmitted until they expire.
+
 
 \begin{table}
   \centering
@@ -323,8 +364,9 @@ messages will be reliably transmitted until they expire.
     \toprule
       Function & Parameters \\
     \midrule
-      \texttt{create\_socket} &  \\
-      \texttt{close\_socket} & \texttt{sd} -- Socket descriptor \\
+      \texttt{socket} & \texttt{af} -- Address family \\
+                      & \texttt{st} -- Socket type \\
+      \texttt{close} & \texttt{sd} -- Socket descriptor \\
     \midrule
       \texttt{bind} & \texttt{sd} -- Socket descriptor \\
                     & \texttt{addr} -- Address to bind to \\
@@ -342,16 +384,18 @@ messages will be reliably transmitted until they expire.
       & \texttt{buf} -- Message data \\
       & \texttt{len} -- Length of message data \\
       & \texttt{seq\_num} -- Sequence number \\
-      & \texttt{lifetime} -- Lifetime of message (in ms) \\ 
+      & \texttt{deadline} -- Relative deadline of message (in ms) \\ 
       & \texttt{depends\_on} -- \texttt{seq\_num} of dependency \\
       & \texttt{substream} -- Substream identifier \\
-      \texttt{receive\_message} & \texttt{sd} -- Socket descriptor \\
+      \texttt{recv\_message} & \texttt{sd} -- Socket descriptor \\
       & \texttt{buf} -- Buffer for message data \\
       & \texttt{len} -- Size of \texttt{buf} \\
       & \texttt{substream} -- Substream identifier \\
+      & \todo{return value, rather than param?}\\
     \bottomrule
   \end{tabular}
-  \caption{Outline transport API for real-time applications}
+  \caption{Outline transport API for real-time applications 
+          \todo{show return values of these calls}}
   \label{tab:api}
 \end{table}
 
