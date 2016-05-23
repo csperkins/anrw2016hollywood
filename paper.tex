@@ -384,7 +384,7 @@ services: messages will be reliably transmitted until they expire.
                                    & \texttt{close}          
                                               & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
     \midrule
-      \textbf{Connection oriented} & \texttt{bind}           
+      Connection oriented          & \texttt{bind}           
                                               & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
                                    &          & \texttt{addr} -- Address to bind to & \\
                                    &          & \texttt{addrlen} -- Length of \texttt{addr} & \\
@@ -398,22 +398,22 @@ services: messages will be reliably transmitted until they expire.
                                               & \texttt{addr} -- Address to connect to         & 0 (success), -1 (error) \\
                                    &          & \texttt{addrlen} -- Length of \texttt{addr} & \\
     \midrule
-      \textbf{Deadlines}           & \texttt{set\_po\_delay} 
+      Deadlines                    & \texttt{set\_po\_delay} 
                                               & \texttt{delay} -- Playout delay (in ms)        & 0 (success), -1 (error) \\
     \midrule
-      \textbf{Message oriented}    & \texttt{send\_message}  
+      Message oriented             & \texttt{send\_message}  
                                               & \texttt{sd} -- Socket descriptor               & Number of bytes sent \\
                                    &          & \texttt{buf} -- Message data & \\
                                    &          & \texttt{len} -- Length of message data & \\
                                    &          & \texttt{seq\_num} -- Sequence number & \\
-      \emph{Deadlines}             &          & \texttt{deadline} -- Relative deadline of message (in ms) & \\ 
-      \emph{Dependencies}          &          & \texttt{depends\_on} -- \texttt{seq\_num} of dependency & \\
-      \emph{Sub-streams}           &          & \texttt{substream} -- Substream identifier & \\
+      Deadlines                    &          & \texttt{deadline} -- Relative deadline of message (in ms) & \\ 
+      Dependencies                 &          & \texttt{depends\_on} -- \texttt{seq\_num} of dependency & \\
+      Sub-streams                  &          & \texttt{substream} -- Substream identifier & \\
                                    & \texttt{recv\_message}  
                                               & \texttt{sd} -- Socket descriptor               & Number of bytes received \\
                                    &          & \texttt{buf} -- Buffer for message data & \\
                                    &          & \texttt{len} -- Size of \texttt{buf} & \\
-      \emph{Sub-streams}           &          & \texttt{substream} -- Substream identifier & \\
+      Sub-streams                  &          & \texttt{substream} -- Substream identifier & \\
                                    &          & \todo{return value, rather than param?} & \\
     \bottomrule
   \end{tabularx}
