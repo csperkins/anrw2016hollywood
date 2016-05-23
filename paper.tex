@@ -193,7 +193,7 @@ Finally, Section \ref{sec:related} discusses related work, and Section
 
 In the IETF, the Transport Services (TAPS) working group is chartered to 
 (1) develop a taxonomy of \emph{transport services}, that is, to identify the
-features that comprise, and can be combined, to form complete transport
+features that comprise, and can be combined to form, complete transport
 protocols; and (2) to develop an abstract API for applications to request
 desirable services, allowing the system to select an appropriate transport
 protocol based on application needs. It is hoped that this will loosen the
@@ -227,7 +227,7 @@ application, but strict in that any particular deadline provides a hard
 cut-off, after which the data is useless. 
 
 The presence of deadlines, in a network that offers only a best-effort
-packet deliver service, implies that the transport must provide
+packet delivery service, implies that the transport must provide
 \emph{partial reliability}.
 The network has non-zero probability of losing any particular packet. 
 If forward error correction is used to repair loss, this implies there is
@@ -247,30 +247,35 @@ of partial reliability in TCP. Missing one frame that has not been
 delivered by its deadline is much less disruptive than a stall in play-out. 
 
 Given deadlines and partial reliability, the next important transport
-service is \emph{dependency management}. There is no point sending data
-that cannot be used, because it depends on previous data that was lost. 
-\todo{...complex trade-off, since you might want to send data that misses its 
-   deadline, if it allows later data to be used.}
+service is \emph{dependency management}. There is no point in sending data
+that cannot be used because it depends on previous data that was not
+received. Providing this service is complicated by the two ways in which
+data can be \emph{useful} to applications: it may itself by played out, or
+it may be needed as part of the application's decoding chain. For example,
+an I frame provides utility both in being played out, and in allowing for
+subsequent P and B frames. As a result, dependency information may result
+in deadline information being overruled: data may be sent even if it cannot
+be played out, if it is necessary for the decoding of other data.
 
-\todo{...following from this, we have the concept of application-level framing
-   to make the best use of data, irrespective of losses. This implies that
-   the transport provides a \emph{message oriented} service that respects
-   ADU boundaries.}
+Providing partial reliability, through deadlines and dependencies, requires
+the use of application-level framing \cite{clark:1990:architecture} to
+make the best use of payload data, irrespective of packet loss. At the
+transport layer, this implies that we provide a \emph{message oriented}
+service, that maintains ADU boundaries.
 
-\todo{...we note that many multimedia applications make use of multiple streams. 
-   For example, audio and video are logically separate, etc.
-   can be supported by opening multiple transport connections, but
-   desirable to support a \emph{sub-stream} service to reduce overheads.}
+Many multimedia applications make use of multiple data flows. For example,
+a simple IPTV application will maintain separate audio and video flows.
+These could be sent across multiple transport-layer connections, but
+overheads can be reduced by multiplexing these flows on a single
+connection. A \emph{sub-stream} service allows this.
 
-\todo{...finally, we note that \emph{congestion control} is important. 
-   motivate: historically there has been a belief that real-time doesn't 
-   do congestion control, needs an isochronous channel. 
-   not practical for the Internet. 
-   Also, experience has shown not necessary for many real-time applications.
-   Yes, there are some that need constant bandwidth and cannot adapt, but
-   many are adaptive. 
-   Better user experience to adapt to fit the channel, rather than recover
-   from loss after the channel discards packets that don't fit. }
+We note that \emph{congestion control} is important. Clearly, the historic
+belief that real-time applications require an isochronous channel, and
+cannot be subjected to congestion control, is not practical on the
+Internet. Further, while there is a number of applications that are not
+adaptive (and require constant bandwidth), an increasing number are
+adaptive, and would better serve users by adapting to the available
+bandwidth.
 
 We note that a connection-oriented transport is not a core requirement for
 many real-time multimedia applications.  Indeed, flexibility to change the
