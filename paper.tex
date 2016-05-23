@@ -21,6 +21,8 @@
 \usepackage{tabularx}
 \usepackage{rotating}
 \usepackage{tikz}
+\usepackage{xspace}   %MF
+\usepackage{enumitem} %MF
 
 \makeatletter
 \global\let\tikz@ensure@dollar@catcode=\relax
@@ -30,7 +32,6 @@
 \newcommand{\pass}{\tikz\draw[green,fill=green] (0,0) circle (.5ex);}
 \newcommand{\okay}{\tikz\draw[orange,fill=orange] (0,0) circle (.5ex);}
 
-\usepackage{xspace}
 
 \newcommand{\ie}{{i.e.,}\xspace}
 \newcommand*\rot{\rotatebox{90}}
@@ -177,9 +178,9 @@ UDP, despite the limitations imposed by their legacies, and by
 middleboxes, and ossification of the network.  Initial experiments
 with our implementation suggest that
 %to show that, despite network ossification,
-the network has the flexibility to deploy new transport protocols,
-provided care is taken to reinterpret layer boundaries that respect
-conventional UDP and TCP.\todo{I can infer the meaning of previous sentence having worked on the problem; otherwise may be very ambiguous to the reader.}
+the network has the flexibility to deploy new transport protocols, provided care
+is taken to reinterpret application and transport layer boundaries that respect
+conventional UDP and TCP.
 %and deploy those new transports in the context of TCP and UDP.
 
 % Paragraph 4: What are the differences between your work, and what others
@@ -251,21 +252,21 @@ programming are on the order of seconds.
 % , such as broadcast TV, may have deadlines on the order of seconds,
 % or even tens of seconds for on-demand programming.
 
-Networked multimedia deadlines are unusual when compared to other real-time
-systems. They are simultaneously flexible and strict: flexible in that the exact
-value of the deadline is typically not important, provided it is of the right
-order-of-magnitude for the application, but strict in that any particular
-deadline provides a hard cut-off, after which the data is useless. \todo{Is this para necessary at all? Its contribution is unclear and/or unconvincing -- flexible is fine; strict is less believable, \ie
-how are RT systems any different when the deadline expires? (Many RTSs will
-discard, too. Ultimately, I get what it is trying to say; I'm less sure it needs saying) Maybe the following(?):}
-% When compared to conventional real-time systems, networked multimedia
-% deadlines are neither soft nor hard.
-It is useful to draw a distinction between in networked multimedia deadlines and
-deadlines in conventional real-time systems. A multimedia deadline is neither soft, since arrivals played after a deadline contribute to poor experience; nor are deadlines hard, since occasional missed messages can be tolerated.
+% % When compared to conventional real-time systems, networked multimedia
+% % deadlines are neither soft nor hard.
+% Networked multimedia deadlines are unusual when compared to other real-time
+% systems. They are simultaneously flexible and strict: flexible in that the exact
+% value of the deadline is typically not important, provided it is of the right
+% order-of-magnitude for the application, but strict in that any particular
+% deadline provides a hard cut-off, after which the data is useless.
+It is useful to distinguish between networked multimedia deadlines and
+deadlines in conventional real-time systems. A multimedia deadline is neither
+soft, since arrivals played after a deadline contribute to poor experience; nor
+are deadlines hard, since occasional missed messages can be tolerated.
 
 \subsection{Partial Reliability}
-In a network that offers only a best-effort packet delivery service, deadlines
-constrain delivery to \emph{partial reliability}.
+In a best-effort network, deadlines
+constrain packet delivery service to \emph{partial reliability}.
 %The network has non-zero probability of losing any particular packet.
 For example, when used to repair loss, the limits of forward error correction
 imply some probability that packet will be non-recoverable. By contrast,
@@ -302,10 +303,10 @@ higher priority than deadlines.
 % : data may be sent even if it
 % cannot be played out, if it is necessary for the decoding of other data.
 
-Partial reliability in the context of both deadlines and dependencies
+In the context of both deadlines and dependencies coupled with packet loss, partial reliability
 requires application-level framing \cite{clark:1990:architecture} to
-make the best use of payload data, irrespective of packet loss. At the transport
-layer, this implies that we provide a \emph{message oriented} service, that
+make the best use of payload data. At the transport
+layer, this implies a \emph{message oriented} service, that
 maintains application data unit (ADU) boundaries.
 
 Message orientation may also be used to construct a \emph{sub-stream} service.
@@ -317,17 +318,17 @@ reduced by multiplexing these flows on a single connection.
 \subsection{Connection and Congestion Control}
 
 We note the importance of congestion control. %Clearly,
-The historic belief that real-time applications require an isochronous channel,
-and should not be subjected to congestion control, is impractical on the
+Historically real-time applications needed an isochronous channel,
+and needed to avoid subjected to congestion control. This is impractical on the
 Internet. Further, while some applications are non-adaptive or constant bitrate,
-an increasing number are either or both of adaptive and variable bitrate. Such
-applications would better serve users by adapting to the available bandwidth.
+an increasing number are either or both of adaptive and variable bitrate. Users would be better served by
+applications that to available bandwidth.
 
 We note that a connection-oriented transport is a lesser, but useful,
 requirement.
 % for many real-time multimedia applications.
 Indeed, flexibility to
-change the destination of data within a call could be beneficial for
+change the destination within a call is beneficial for
 applications that support mobile users, or for some forms of multiparty session.
 However, to support NAT traversal and to help dynamically manage firewall
 pinholes, it is often desirable for the transport to be connection oriented. We
@@ -344,7 +345,7 @@ Given the set of transport services outlined in Table \ref{tab:services},
 we sketch an abstract API in  Table \ref{tab:api}. The primitives divide
 into four categories:
 
-\begin{itemize}
+\begin{itemize}[nosep]
   \item Hosts setup and tear-down sockets using the \texttt{socket()}
     and \texttt{close()} functions, as in the standard Berkeley sockets
     API.
@@ -354,8 +355,8 @@ into four categories:
     \texttt{listen()} for and \texttt{accept()} incoming connections.
     Clients \texttt{connect()} to a server.
 
-   \item Once the connection is established, the receiver application
-     indicates the media play-out delay it is using, in milliseconds, via
+   \item Once the connection is established, the receiver
+     indicates the its media play-out delay, in milliseconds, via
      the \texttt{set\_po\_delay()} call. This specifies the time that the
      application will buffer data, to compensate for network timing jitter,
      before it is rendered to the user. The play-out delay is fed back to
@@ -367,26 +368,26 @@ into four categories:
     application, framing data such that either a complete message is
     delivered, or it is lost in its entirety.
 
-    The \texttt{send\_message()} call takes four additional parameters
-    compared to the standard Berkeley Sockets API. These are 1) a
-    message sequence number, that can be used to re-order messages and
-    detect message loss; 2) a relative deadline, which is combined
-    with an estimate of the current round-trip-time, and the time that
-    the message has spent in the sending buffer, to determine if a
-    message will arrive in time to be played-out; 3) the message
-    sequence number of any message on which this depends, for example,
-    of a video I-frame on which a P-frame is predicted; and 4) a
-    sub-stream identifier, used, for example, to differentiate audio,
+\end{itemize}
+
+    It is instructive to compare the partially reliable send and receive
+    functions to their Berkeley Sockets API counterparts. The
+    \texttt{send\_message()} call takes four additional parameters. These are 1)
+    a message sequence number, that can be used to re-order messages and detect
+    message loss; 2) a relative deadline, which is combined with an estimate of
+    the current round-trip-time, and the time that the message has spent in the
+    sending buffer, to determine if a message will arrive in time to be
+    played-out; 3) the message sequence number of any message on which this
+    depends, for example, of a video I-frame on which a P-frame is predicted;
+    and 4) a sub-stream identifier, used, for example, to differentiate audio,
     video, sub-title, control, and repair streams.
 
-    The \texttt{recv\_message()} call returns the sequence number,
-    dependency information, and sub-stream identifier along with any
-    received message, allowing the receiver to direct it to the correct
-    decoding queue.
+    The \texttt{recv\_message()} call returns the sequence number, dependency
+    information, and sub-stream identifier along with any received message,
+    allowing the receiver to direct it to the correct decoding queue.
 
 %    \todo{relate this to the transport services described earlier}
 
-\end{itemize}
 
 
 A message that won't arrive within its lifetime is considered to have
@@ -398,7 +399,7 @@ from this deadline and dependency service: messages will be reliably
 transmitted until they expire.
 
 \begin{table}
-  \small
+  \scriptsize
   \centering
   \begin{tabular}{ll}
     \toprule
@@ -470,7 +471,7 @@ transmitted until they expire.
 
 It is to be noted that this API is not dissimilar to the PR-SCTP abstract
 API, which provides \textit{timed reliability}, using a ``lifetime''
-specified by the application. 
+specified by the application.
 %\todo{CSP: check this}
 
 %==================================================================================================
@@ -556,7 +557,7 @@ the reliability semantic.
 The TCP congestion control algorithm is executed by the end points, and
 can be changed, provided the new version requires no new information to
 be exchanged.
-\todo{expand, and discuss how this evolution has occurred to date}
+%\todo{expand, and discuss how this evolution has occurred to date}
 We note that, while standardised TCP congestion control has followed the
 goal of maximising throughput at the expense of latency and variability,
 this is not required by the protocol. TCP Vegas \cite{brakmo:1994:tcp-vegas}
@@ -648,7 +649,7 @@ to the wireless link, given its relatively high rate of non-congestive
 loss.
 
 \begin{table}
-  \small \centering
+  \scriptsize \centering
     \begin{tabular}{llcc}
     \toprule
     & ISP & Port 4001 & Port 80 \\ \midrule
@@ -743,7 +744,7 @@ functions in both cases.
 
 At the sender, applications pass messages (using an API similar to that
 given in Table \ref{tab:api}) to the intermediary layer, with their
-metadata, including deadline and dependency information. At the 
+metadata, including deadline and dependency information. At the
 intermediary layer, COBS encoding \cite{CB97COBS} is used to escape all
 zero bytes in the message data, allowing them to be used as framing
 markers. The message's metadata is then attached to the encoded and framed
@@ -820,7 +821,7 @@ message-oriented service, but allows applications to attach a time-line
 to messages. Messages are (re-)transmitted as under standard TCP within
 their time-line, after which they are discarded. The mechanism by which
 this service is provided (introducing gaps in the sequence space) hinders
-deployment. 
+deployment.
 
 QUIC \cite{draft-tsvwg-quic-protocol-02} demonstrates that similar services
 can be provided by a new protocol running over UDP, while \cite{RFC6773} and
@@ -834,7 +835,7 @@ is discussed in this paper, and on our previous work \cite{mcquistin2016hollywoo
 
 The standard transport protocols, TCP and UDP, are not well-suited for
 real-time applications. Both can be made to work, but the existence of
-numerous papers exploring how to make media play-out over TCP reliable, 
+numerous papers exploring how to make media play-out over TCP reliable,
 and almost as extensive a collection discussing UDP-based protocol design,
 suggests that this is difficult to do well. To make effective use of the
 network, and simplify real-time application design and implementation, we
@@ -862,7 +863,7 @@ network. This is the promise of the TAPS API, that we have shown ought to
 be feasible for real-time applications.
 
 % Making effective use of the TAPS concept to support real-time multimedia
-% requires making significant changes to the TCP specification and API, if 
+% requires making significant changes to the TCP specification and API, if
 % such applications are to be able to fall-back to TCP from UDP, and still
 % achieve their performance needs.
 
@@ -872,6 +873,7 @@ be feasible for real-time applications.
 % Acknowledge funding sources.
 %
 %==================================================================================================
+\balance
 \bibliographystyle{abbrv}
 \bibliography{paper}
 \end{document}
