@@ -1,4 +1,4 @@
-\documentclass{sig-alternate-05-2015}
+\documentclass[10pt]{sig-alternate-05-2015}
 \usepackage[l2tabu,orthodox]{nag}
 \usepackage[utf8x]{inputenc}
 \usepackage[british]{babel}
@@ -228,6 +228,8 @@ protocol based on application needs. It is hoped that this will loosen the
 coupling between application and transport, so enabling deployment of new
 transport protocols.
 
+Table \ref{tab:services} summarises the transport services discussed in this
+Section, and required for real-time multimedia applications.
 %--------------------------------------------------------------------------------------------------
 \subsection{Timing and Transport Services}
 
@@ -313,28 +315,27 @@ could be sent across multiple transport-layer connections, but overheads can be
 reduced by multiplexing these flows on a single connection.
 
 \subsection{Connection and Congestion Control}
-We note that \emph{congestion control} is important. Clearly, the historic
-belief that real-time applications require an isochronous channel, and
-cannot be subjected to congestion control, is not practical on the
-Internet. Further, while there is a number of applications that are not
-adaptive (and require constant bandwidth), an increasing number are
-adaptive, and would better serve users by adapting to the available
-bandwidth.
 
-We note that a connection-oriented transport is not a core requirement for
-many real-time multimedia applications.  Indeed, flexibility to change the
-destination of data within a call could be beneficial for applications that
-support mobile users, or for some forms of multiparty session. However, to
-support NAT traversal and to help dynamically manage firewall pinholes, it
-is often desirable for the transport to be connection oriented. We find
-these concerns outweigh the benefits of connectionless transport, and so
-add a requirement for connection oriented service.
-Similarly, while not strictly needed by the applications, it is beneficial
-if the transport provides a keep-alive service to refresh NAT and firewall
-bindings if the application goes silent.
+We note the importance of congestion control. %Clearly,
+The historic belief that real-time applications require an isochronous channel,
+and should not be subjected to congestion control, is impractical on the
+Internet. Further, while some applications are non-adaptive or constant bitrate,
+an increasing number are either or both of adaptive and variable bitrate. Such
+applications would better serve users by adapting to the available bandwidth.
 
-Table \ref{tab:services} summarises the transport services required for
-real-time multimedia applications.
+We note that a connection-oriented transport is a lesser, but useful,
+requirement.
+% for many real-time multimedia applications.
+Indeed, flexibility to
+change the destination of data within a call could be beneficial for
+applications that support mobile users, or for some forms of multiparty session.
+However, to support NAT traversal and to help dynamically manage firewall
+pinholes, it is often desirable for the transport to be connection oriented. We
+believe these concerns outweigh the benefits of connectionless transport, and so
+add a requirement for connection oriented service. Similarly, while not strictly
+needed by the applications, it is beneficial if the transport provides a
+keep-alive service to refresh NAT and firewall bindings if the application goes
+silent.
 
 %--------------------------------------------------------------------------------------------------
 \subsection{Abstract API}
@@ -397,6 +398,7 @@ from this deadline and dependency service: messages will be reliably
 transmitted until they expire.
 
 \begin{table}
+  \small
   \centering
   \begin{tabular}{ll}
     \toprule
@@ -417,6 +419,7 @@ transmitted until they expire.
 \end{table}
 
 \begin{table*}
+  \small
   \centering
   \begin{tabularx}{\textwidth}{llll}
     \toprule
@@ -644,7 +647,7 @@ to the wireless link, given its relatively high rate of non-congestive
 loss.
 
 \begin{table}
-  \centering
+  \small \centering
     \begin{tabular}{llcc}
     \toprule
     & ISP & Port 4001 & Port 80 \\ \midrule
