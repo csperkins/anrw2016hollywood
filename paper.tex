@@ -318,11 +318,11 @@ reduced by multiplexing these flows on a single connection.
 \subsection{Connection and Congestion Control}
 
 We note the importance of congestion control. %Clearly,
-The historic belief that real-time applications require an isochronous channel,
-and should not be subjected to congestion control, is impractical on the
+Historically real-time applications needed an isochronous channel,
+and needed to avoid subjected to congestion control. This is impractical on the
 Internet. Further, while some applications are non-adaptive or constant bitrate,
-an increasing number are either or both of adaptive and variable bitrate. Such
-applications would better serve users by adapting to the available bandwidth.
+an increasing number are either or both of adaptive and variable bitrate. Users would be better served by
+applications that to available bandwidth.
 
 We note that a connection-oriented transport is a lesser, but useful,
 requirement.
@@ -355,8 +355,8 @@ into four categories:
     \texttt{listen()} for and \texttt{accept()} incoming connections.
     Clients \texttt{connect()} to a server.
 
-   \item Once the connection is established, the receiver application
-     indicates the media play-out delay it is using, in milliseconds, via
+   \item Once the connection is established, the receiver
+     indicates the its media play-out delay, in milliseconds, via
      the \texttt{set\_po\_delay()} call. This specifies the time that the
      application will buffer data, to compensate for network timing jitter,
      before it is rendered to the user. The play-out delay is fed back to
