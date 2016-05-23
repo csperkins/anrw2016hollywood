@@ -1,7 +1,7 @@
-\documentclass{sig-alternate-05-2015}
+\documentclass[10pt]{sig-alternate-05-2015}
 \usepackage[l2tabu,orthodox]{nag}
-\usepackage[utf8x]{inputenc}       
-\usepackage[british]{babel}        
+\usepackage[utf8x]{inputenc}
+\usepackage[british]{babel}
 \usepackage[babel=true]{microtype}
 \usepackage{amsmath}
 \usepackage[all]{onlyamsmath}
@@ -114,34 +114,41 @@ its use as a demultiplexing layer for novel transport protocols.
 % context here. Why is the problem of interest and importance to the larger
 % community?
 
-Real-time applications are increasingly important in the Internet. 
-We want to make it easier to write these applications, while improving
-the quality of experience for users of those applications by lowering
-latency and increasing robustness. 
-In this, we are challenged by the limitations of the standard Internet 
-transport protocols, and by the ossified nature of the network, which makes
-it increasingly difficult to deploy new transports. 
+Real-time applications are increasingly
+%important
+present in the Internet.
+%We want to make it easier to write these applications
+Such applications should be easier to program, while also improving
+the quality of experience for users.
+ %of those applications
+by lowering latency and increasing robustness.
+%In this, we are
+This limitations of standard Internet transport protocols makes this a
+challenging target. Moreover, the ossified nature of the network makes
+it increasingly difficult to deploy new transports.
 
 % Paragraph 2: What is the specific problem considered in this paper? This
 % paragraph narrows down the topic area of the paper. In the first
 % paragraph you have established general context and importance. Here you
 % establish specific context and background.
 
-In practice, the only protocols that can be widely used in the Internet are
-TCP and UDP. Other protocols are blocked by firewalls and other middleboxes.  
-TCP provides sophisticated congestion control, coupled with a reliable,
-ordered, byte stream API. These are suitable for many applications, but are
-not necessarily appropriate for real-time traffic.  UDP exposes the best-effort 
-IP packet delivery service, offering flexibility to develop new protocols,
-but at the cost of requiring completely new protocol mechanisms to be
-defined. Both protocols are usable for real-time applications, but neither
-really provides the right services and API.  This forces each application
-to re-invent mechanisms that should be provided by the transport, increasing 
-costs and complexity, raising barriers to innovation.
+In practice, only UDP and TCP are widely usable in the Internet,
+since remaining protocols are blocked by firewalls and other
+middleboxes. UDP exposes the best-effort IP packet delivery service,
+offering the flexibility to develop new protocols. The high costs
+associated involve defining completely new protocol mechanisms. In
+contrast TCP mechanisms are well defined, consisting of sophisticated
+congestion control coupled with a reliable, ordered, byte stream API.
+These are proven suitable for many applications, but are inappropriate
+for real-time traffic. While both protocols may be used for real-time
+applications, neither really provides the right services and API. This
+forces each application to re-invent or re-interpret mechanisms that
+should be provided by the transport. The increased costs and
+complexity of doing so raise barriers to innovation.
 
 % Paragraph 3: "In this paper, we show that...". This is the key paragraph
 % in the introduction - you summarize, in one paragraph, what are the main
-% contributions of your paper, given the context established in paragraphs 
+% contributions of your paper, given the context established in paragraphs
 % 1 and 2. What's the general approach taken? Why are the specific results
 % significant? The story is not what you did, but rather:
 %  - what you show, new ideas, new insights
@@ -149,15 +156,18 @@ costs and complexity, raising barriers to innovation.
 % State your contributions: these drive the entire paper.  Contributions
 % should be refutable claims, not vague generic statements.
 
-In this paper we discuss the appropriate set of transport services and APIs
-for real-time applications.
-We demonstrate that it is possible to realise these services and APIs
-in the context of both TCP and UDP, despite the limitations imposed by the
-legacy protocols, middleboxes, and ossification of the network. 
-We present initial results to show that, despite the observed ossification,
-the network has the flexibility to deploy new transport protocols, if care
-is taken to reinterpret layer boundaries and deploy those new transports in
-the context of TCP and UDP.
+In this paper we identify and present the appropriate set of transport
+services and APIs for real-time applications, and demonstrate their
+merit by implementing a proof-of-concept. We show that it is possible
+to realise real-time services and APIs in the context of both TCP and
+UDP, despite the limitations imposed by their legacies, and by
+middleboxes, and ossification of the network.  Initial experiments
+with our implementation suggest that
+%to show that, despite network ossification,
+the network has the flexibility to deploy new transport protocols,
+provided care is taken to reinterpret layer boundaries that respect
+conventional UDP and TCP.\todo{I can infer the meaning of previous sentence having worked on the problem; otherwise may be very ambiguous to the reader.}
+%and deploy those new transports in the context of TCP and UDP.
 
 % Paragraph 4: What are the differences between your work, and what others
 % have done? Keep this at a high level, as you can refer to future sections
@@ -165,27 +175,30 @@ the context of TCP and UDP.
 % for the reader to know what is new about this work compared to other work
 % in the area.
 
-Our contributions are to identify the needs of real-time applications, and
-the appropriate transport services and APIs to support those needs; 
-to illustrate how those transport services can be realised on the current
-Internet, in the context of UDP and TCP deployments; and 
-to present some initial measurement results to show that the mechanisms we
-propose ought to be usable in the public Internet. 
+% Our contributions
+In doing so we make three main contributions. First, we make explicit
+the needs of real-time applications, as well as the appropriate
+transport services and APIs to support those needs. Second, we
+illustrate an example realisation of those transport services on the
+current Internet, in the context of UDP and TCP deployments. Finally,
+we present initial measurement results that suggest the proposed
+mechanisms ought to be usable in the public Internet.
 
 % Paragraph 5: "We structure the remainder of this paper as follows." Give
 % the reader a road-map for the rest of the paper. Try to avoid redundant
 % phrasing, "In Section 2, In section 3, ..., In Section 4, ... ", etc.
 
-We begin, in Section \ref{sec:services} by discussing transport services 
-for real-time applications, and outlining the common conceptual API that
-those applications use. 
-This is followed, in Section \ref{sec:ossification}, by a review of the
-deployment considerations for new protocols, caused by ossification of
-the network, with Section \ref{sec:partial} considering, in particular, how
-TCP reliability semantics can evolve within the constraints of the deployed
-infrastructure.
-Section \ref{sec:realising} outlines how the transport services we have
-identified can be realised in practical networks.
+We begin in Section \ref{sec:services} by discussing transport
+services for real-time applications, and outlining the common
+conceptual API that those applications use. This is followed in
+Section \ref{sec:ossification} by a review of deployment
+considerations for new protocols, caused by ossification of the
+network. Section \ref{sec:partial} considers, in particular, how TCP
+reliability semantics can evolve within the constraints of the
+existing infrastructure. The semantics are realised and put into
+practice in Section \ref{sec:realising}.
+% outlines how the transport services we have identified can be
+% realised in practical networks.
 Finally, Section \ref{sec:related} discusses related work, and Section
 \ref{sec:conclusions} concludes.
 
@@ -193,13 +206,13 @@ Finally, Section \ref{sec:related} discusses related work, and Section
 \section{Real-time Transport Services}
 \label{sec:services}
 
-In the IETF, the Transport Services (TAPS) working group is chartered to 
+In the IETF, the Transport Services (TAPS) working group is chartered to
 (1) develop a taxonomy of \emph{transport services}, that is, to identify the
 features that comprise, and can be combined to form, complete transport
 protocols; and (2) to develop an abstract API for applications to request
 desirable services, allowing the system to select an appropriate transport
 protocol based on application needs. It is hoped that this will loosen the
-coupling between application and transport, so enabling deployment of new 
+coupling between application and transport, so enabling deployment of new
 transport protocols.
 
 %--------------------------------------------------------------------------------------------------
@@ -213,40 +226,40 @@ protocols needed to support those needs.
 The essential feature of real-time applications is clearly timing. That is,
 since these applications convey real-time data, they all have some concept
 of a \emph{deadline} by which that data must be presented, after which it
-becomes useless. 
+becomes useless.
 The deadline might be short or long. Interactive applications, such as
 telephony, video conferencing, or telepresence, require low end-to-end
 latency, with the deadline for presenting the media (playing the audio,
 displaying the video frame) being tens, or perhaps low hundreds, of
 milliseconds after it was captured. Non-interactive applications, such as
 broadcast TV, may have deadlines in the order of seconds, or even tens of
-seconds for on-demand programming. 
+seconds for on-demand programming.
 The deadlines in many networked multimedia applications are unusual when
 compared to other real-time systems. They are simultaneously flexible and
 strict: flexible in that the exact value of the deadline is typically not
 important, provided it is of the right order-of-magnitude for the
 application, but strict in that any particular deadline provides a hard
-cut-off, after which the data is useless. 
+cut-off, after which the data is useless.
 
 The presence of deadlines, in a network that offers only a best-effort
 packet delivery service, implies that the transport must provide
 \emph{partial reliability}.
-The network has non-zero probability of losing any particular packet. 
+The network has non-zero probability of losing any particular packet.
 If forward error correction is used to repair loss, this implies there is
 always some probability that a particular packet will be non-recoverable.
-If retransmission is used to recover from losses, there is the potential 
-for unbounded delay, since any retransmission may itself be lost. 
+If retransmission is used to recover from losses, there is the potential
+for unbounded delay, since any retransmission may itself be lost.
 These probabilities can be estimated, to give probabilistic constraints
 on loss and delay, but will be non-zero. Accordingly, to meet deadlines,
 the transport must support partial reliability service, accepting that
 it may not be able to deliver all data by its deadline.
 Many real-time applications run over TCP today, and TCP does not offer a
-partial reliability service. This results in occasional play-out stalls, 
+partial reliability service. This results in occasional play-out stalls,
 when the transport blocks the application because a retransmission takes
 too long. These stalls are one of the primary causes of poor user
 experience in streaming applications, and are directly caused by the lack
 of partial reliability in TCP. Missing one frame that has not been
-delivered by its deadline is much less disruptive than a stall in play-out. 
+delivered by its deadline is much less disruptive than a stall in play-out.
 
 Given deadlines and partial reliability, the next important transport
 service is \emph{dependency management}. There is no point in sending data
@@ -286,25 +299,25 @@ support mobile users, or for some forms of multiparty session. However, to
 support NAT traversal and to help dynamically manage firewall pinholes, it
 is often desirable for the transport to be connection oriented. We find
 these concerns outweigh the benefits of connectionless transport, and so
-add a requirement for connection oriented service. 
+add a requirement for connection oriented service.
 Similarly, while not strictly needed by the applications, it is beneficial
 if the transport provides a keep-alive service to refresh NAT and firewall
-bindings if the application goes silent. 
+bindings if the application goes silent.
 
 Table \ref{tab:services} summarises the transport services required for
-real-time multimedia applications. 
+real-time multimedia applications.
 
 %--------------------------------------------------------------------------------------------------
 \subsection{Abstract API}
 
-Given the set of transport services outlined in Table \ref{tab:services}, 
+Given the set of transport services outlined in Table \ref{tab:services},
 we sketch an abstract API in  Table \ref{tab:api}. The primitives divide
 into four categories:
 
 \begin{itemize}
   \item Hosts setup and tear-down sockets using the \texttt{socket()}
     and \texttt{close()} functions, as in the standard Berkeley sockets
-    API. 
+    API.
 
   \item The connection primitives are the same as those of TCP sockets.
     Servers \texttt{bind()} to a particular address and port, then
@@ -316,42 +329,43 @@ into four categories:
      the \texttt{set\_po\_delay()} call. This specifies the time that the
      application will buffer data, to compensate for network timing jitter,
      before it is rendered to the user. The play-out delay is fed back to
-     the sender host, for use as part of the media deadline estimation. 
-    
+     the sender host, for use as part of the media deadline estimation.
+
   \item Finally, message-oriented data transmission is exposed by the
-    \texttt{send\_message()} and \texttt{recv\_message()} functions.  
+    \texttt{send\_message()} and \texttt{recv\_message()} functions.
     These expose a partially reliable message delivery service to the
     application, framing data such that either a complete message is
-    delivered, or it is lost in its entirety. 
+    delivered, or it is lost in its entirety.
 
     The \texttt{send\_message()} call takes four additional parameters
-    compared to the standard Berkeley Sockets API. These are 1) a message
-    sequence number, that can be used to re-order messages and detect 
-    message loss; 2) a relative deadline, which is combined with an
-    estimate of the current round-trip-time, and the time that the message
-    has spent in the sending buffer, to determine if a message will arrive
-    in time to be played-out; 3) the sequence number of any message on
-    which this depends, for example the sequence number of a video I-frame
-    on which a P-frame is predicted; and 4) a sub-stream identifier, used,
-    for example, to differentiate audio, video, sub-title, control, and
-    repair streams.
+    compared to the standard Berkeley Sockets API. These are 1) a
+    message sequence number, that can be used to re-order messages and
+    detect message loss; 2) a relative deadline, which is combined
+    with an estimate of the current round-trip-time, and the time that
+    the message has spent in the sending buffer, to determine if a
+    message will arrive in time to be played-out; 3) the message
+    sequence number of any message on which this depends, for example,
+    of a video I-frame on which a P-frame is predicted; and 4) a
+    sub-stream identifier, used, for example, to differentiate audio,
+    video, sub-title, control, and repair streams.
 
     The \texttt{recv\_message()} call returns the sequence number,
     dependency information, and sub-stream identifier along with any
     received message, allowing the receiver to direct it to the correct
-    decoding queue. 
+    decoding queue.
 
     \todo{relate this to the transport services described earlier}
 
 \end{itemize}
 
-    
+
 A message that won't arrive within its lifetime is considered to have
-\emph{expired}. Applications specify the application-level sequence number
-of a message they depend on (\texttt{depends\_on}). If the message depends
-on a message that has expired, then it too is considered to have expired.
-The partial reliability service follows from the deadline and dependency
-services: messages will be reliably transmitted until they expire.
+\emph{expired}. A message is also considered to have expired if its
+message sequence number dependency, \texttt{depends\_on},
+%on which a message depends, . If the message depends on a message that has expired, then it too is considered to have
+has expired. A partial reliability service follows
+from this deadline and dependency service: messages will be reliably
+transmitted until they expire.
 
 
 \begin{table}
@@ -380,38 +394,38 @@ services: messages will be reliably transmitted until they expire.
     \toprule
       Transport Service            & Function & Parameters                                     & Return Value \\
     \midrule
-                                   & \texttt{socket}         
+                                   & \texttt{socket}
                                               & \texttt{af} -- Address family                  & Socket descriptor \\
                                    &          & \texttt{st} -- Socket type & \\
-                                   & \texttt{close}          
+                                   & \texttt{close}
                                               & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
     \midrule
-      Connection oriented          & \texttt{bind}           
+      Connection oriented          & \texttt{bind}
                                               & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
                                    &          & \texttt{addr} -- Address to bind to & \\
                                    &          & \texttt{addrlen} -- Length of \texttt{addr} & \\
-                                   & \texttt{listen}         
+                                   & \texttt{listen}
                                               & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
-                                   & \texttt{accept}        
+                                   & \texttt{accept}
                                               & \texttt{sd} -- Listening socket descriptor     & Connection socket descriptor \\
                                    &          & \texttt{addr} -- Address of peer & \\
                                    &          & \texttt{addrlen} -- Length of \texttt{addr} & \\
-                                   & \texttt{connect}        
+                                   & \texttt{connect}
                                               & \texttt{addr} -- Address to connect to         & 0 (success), -1 (error) \\
                                    &          & \texttt{addrlen} -- Length of \texttt{addr} & \\
     \midrule
-      Deadlines                    & \texttt{set\_po\_delay} 
+      Deadlines                    & \texttt{set\_po\_delay}
                                               & \texttt{delay} -- Playout delay (in ms)        & 0 (success), -1 (error) \\
     \midrule
-      Message oriented             & \texttt{send\_message}  
+      Message oriented             & \texttt{send\_message}
                                               & \texttt{sd} -- Socket descriptor               & Number of bytes sent \\
                                    &          & \texttt{buf} -- Message data & \\
                                    &          & \texttt{len} -- Length of message data & \\
                                    &          & \texttt{seq\_num} -- Sequence number & \\
-      Deadlines                    &          & \texttt{deadline} -- Relative deadline of message (in ms) & \\ 
+      Deadlines                    &          & \texttt{deadline} -- Relative deadline of message (in ms) & \\
       Dependencies                 &          & \texttt{depends\_on} -- \texttt{seq\_num} of dependency & \\
       Sub-streams                  &          & \texttt{substream} -- Substream identifier & \\
-                                   & \texttt{recv\_message}  
+                                   & \texttt{recv\_message}
                                               & \texttt{sd} -- Socket descriptor               & Number of bytes received \\
                                    &          & \texttt{buf} -- Buffer for message data        & Substream identifier \\
                                    &          & \texttt{len} -- Size of \texttt{buf} & \\
@@ -432,27 +446,27 @@ specified by the application. \todo{CSP: check this}
 \label{sec:ossification}
 
 The Internet architecture, in principle, allows free innovation at the
-transport layer, provided the underlying network (IP) layer is unchanged.  
+transport layer, provided the underlying network (IP) layer is unchanged.
 Routers should inspect the source addresses of packets to perform network
 ingress filtering \cite{rfc:2827}, and the destination addresses to route
 packets to the correction destination, but should not inspect their
-contents. This is not, of course, how the real network operates. 
+contents. This is not, of course, how the real network operates.
 
 There are performance and security benefits that can be attained by
 adding transport-layer functionality \emph{within} the network. For
 example, a firewall can better protect the network if it can detect payload
 anomalies. 
 
-The implication of this reality is that it is difficult to deploy new 
+The implication of this reality is that it is difficult to deploy new
 transport protocols. The installed base of NATs, firewalls, and other
 middleboxes is such that packets that do not look like TCP or UDP are
 unlikely to pass the network. We may innovate all we like, provided the
 transport of the future looks like TCP or UDP to middleboxes.\footnote{
-  This is inconvenient, certainly, but is not necessarily a bad thing. 
-  The Internet is critical infrastructure. It support emergency services, 
-  healthcare applications, infrastructure components, financial services, 
-  and so on, many of which are essential to the functioning of society. 
-  Making changes to this type of infrastructure \emph{should} require 
+  This is inconvenient, certainly, but is not necessarily a bad thing.
+  The Internet is critical infrastructure. It support emergency services,
+  healthcare applications, infrastructure components, financial services,
+  and so on, many of which are essential to the functioning of society.
+  Making changes to this type of infrastructure \emph{should} require
   careful backwards compatibility \cite{mcquistin:2015:reinterpreting}.
 }
 
@@ -465,8 +479,8 @@ additional header. Examples in this space include RTP \cite{rfc:3550}, one
 of the most widely deployed real-time transport protocols; the WebRTC Data
 Channel \cite{draft-ietf-rtcweb-data-channel-13}, which tunnels
 peer-to-peer SCTP associations over a DTLS association over UDP; and QUIC
-\cite{draft-tsvwg-quic-protocol-02}, which provides a modern alternative 
-to TCP, implemented over UDP. 
+\cite{draft-tsvwg-quic-protocol-02}, which provides a modern alternative
+to TCP, implemented over UDP.
 
 Despite these advantages, UDP can be problematic as a substrate for new
 protocol development. UDP traffic is blocked by some enterprise firewalls,
@@ -476,8 +490,8 @@ part this is due to ignorance. Outside specific niches, such as DNS, UDP
 has not been widely used in enterprise environments, and hence is widely
 misunderstood. Blocking the unknown is a rational response. In addition,
 UDP traffic has been widely used as a component of distributed denial of
-service (DDoS) attacks, leading some to install blanket blocks of UDP as 
-a safety measure (blanket blocking, rather than the more targeted blocks 
+service (DDoS) attacks, leading some to install blanket blocks of UDP as
+a safety measure (blanket blocking, rather than the more targeted blocks
 used when TCP traffic is used in DDoS attacks, are justified using the
 argument that UDP is not widely used).
 These issues are slowly changing, as UDP-based applications penetrate the
@@ -485,7 +499,7 @@ enterprise consciousness, but not clear that UDP is universally available
 (Google report 90-95\% of endpoints are reachable with QUIC
 running over UDP \cite{roskind2013quic}, but it is not clear that the set
 of hosts running their Chrome browser is representative of all Internet
-environments). 
+environments).
 
 Beyond the availability of UDP, it is often necessary to use TCP because
 HTTP is being used at the application-layer. For real-time systems, this
@@ -494,7 +508,7 @@ MPEG-DASH or Apple's HLS. Using TCP as a substrate enables the use of these
 protocols, allowing applications to benefit from the existing
 infrastructure that supports them.
 
-TCP is a more complex choice for innovation. It is a more sophisticated 
+TCP is a more complex choice for innovation. It is a more sophisticated
 protocol than UDP, with complex headers, and a protocol state machine
 that mandates much more behaviour and is widely understood, and policed,
 by in-network middleboxes. This does not mean that TCP cannot evolve, or
@@ -505,11 +519,11 @@ attention to backwards compatibility.
 We identify a number of places where TCP can evolve with comparative
 freedom. These include congestion control, the end-point API, and data
 segmentation. If care is taken, there is also the possibility to change
-the reliability semantic. 
+the reliability semantic.
 
-The TCP congestion control algorithm is executed by the end points, and 
-can be changed, provided the new version requires no new information to 
-be exchanged. 
+The TCP congestion control algorithm is executed by the end points, and
+can be changed, provided the new version requires no new information to
+be exchanged.
 \todo{expand, and discuss how this evolution has occurred to date}
 We note that, while standardised TCP congestion control has followed the
 goal of maximising throughput at the expense of latency and variability,
@@ -525,8 +539,8 @@ network, and can be changed. Relaxing the API to enable the out-of-order
 delivery of segments is trivial: segments are delivered to the application
 in the order that they arrive, with their TCP sequence attached. The TCP
 sequence number can be passed to the application using the existing
-Berkeley sockets API, either with the received data, or using 
-\texttt{getsockopt()}. Out-of-order delivery is not useful when using a 
+Berkeley sockets API, either with the received data, or using
+\texttt{getsockopt()}. Out-of-order delivery is not useful when using a
 byte-stream abstraction, and so the API should be further modified to
 provide a message-oriented abstraction. The Berkeley sockets API already
 supports such an abstraction for datagram protocols.
@@ -534,7 +548,7 @@ supports such an abstraction for datagram protocols.
 These changes could address many of the transport service needs we have for
 real-time applications, but still leave a critical issue of how to improve
 timing behaviour. Specifically, how to enable partial reliability for TCP,
-after which it is possible to layer-on support for managing deadlines and 
+after which it is possible to layer-on support for managing deadlines and
 dependencies.
 
 %==================================================================================================
@@ -585,10 +599,10 @@ experiments across 135 paths on the Internet, to determine support for
 inconsistent retransmissions. They observed that the majority of paths
 delivered inconsistent retransmissions successfully. On Port 80 (HTTP), the
 original segment was delivered on 7\% of paths tested. Only one connection
-reset was observed. 
+reset was observed.
 
 We conducted further deployment experiments using
-inconsistent retransmissions \cite{mcquistin2016hollywood}, testing all 
+inconsistent retransmissions \cite{mcquistin2016hollywood}, testing all
 major UK providers. We found that 100\% of tested fixed-line networks
 delivered inconsistent retransmissions successfully. However, the delivery
 of the original segment is common on cellular networks, with only 25\% of
@@ -623,16 +637,16 @@ transport protocol, such as DTLS \cite{rfc:6347}.
 While further measurement studies are required to confirm the ability to
 deploy wire-visible changes to TCP (such as inconsistent retransmissions),
 we have shown that we can provide all of the transport services needed by
-real-time applications, using either TCP or UDP. 
+real-time applications, using either TCP or UDP.
 
 Evidence that these services can be deployed above UDP exists in the form
 of the WebRTC data channel \cite{draft-ietf-rtcweb-data-channel-13} and
-QUIC protocol \cite{draft-tsvwg-quic-protocol-02}.  
+QUIC protocol \cite{draft-tsvwg-quic-protocol-02}.
 The former is a peer-to-peer protocol, comprising an SCTP association
 running over DTLS, itself running over a UDP flow negotiated via an SDP
 \cite{RFC4566} offer/answer exchange \cite{RFC3264} as part of a WebRTC
 session \cite{jennings:2013:rtcweb} (the WebRTC media channel uses RTP
-running over UDP also, further showing the utility of UDP-based data). 
+running over UDP also, further showing the utility of UDP-based data).
 This has been deployed in popular web browsers, with global deployment, and
 demonstrated to be effective.  The latter is implemented by Google in their
 Chrome browser, and used as an alternative to TCP has a significant
@@ -643,7 +657,7 @@ fraction of web traffic downloads from their domain.
 % demonstrating that we can layer these services above UDP.
 
 Deployments using UDP are popular, and work well. However, as described in
-Section \ref{sec:ossification}, there are also reasons for providing these 
+Section \ref{sec:ossification}, there are also reasons for providing these
 services over TCP, since there are a significant fraction of networks that
 block UDP traffic. It is clearly possible to run real-time traffic over
 TCP, as demonstrated by applications such as NetFlix or the BBC iPlayer
@@ -706,10 +720,10 @@ be feasible for real-time applications.
 % because the reader knows nothing about the problem yet, so your
 % (carefully trimmed) description of various technical trade-offs is
 % absolutely incomprehensible.
-% 
+%
 % When writing the related work:
 %  - Give credit to others where it's due; this doesn't diminish the
-%    credit you get from your paper. 
+%    credit you get from your paper.
 %  - Acknowledge weaknesses in your approach.
 %  - Ensure related work is accurate and up-to-date
 
@@ -717,7 +731,7 @@ The Minion protocol suite \cite{nowlan:2012:minion} includes uTCP, a
 protocol that uses TCP as a substrate to provide an unordered,
 message-oriented service to applications. While this enables many of
 the transport services described in Section \ref{sec:services}, support for
-partial reliability, deadlines, and dependencies is not provided. 
+partial reliability, deadlines, and dependencies is not provided.
 Time-Lined TCP (TLTCP) \cite{mukherjee:2000:timelines} similarly provides a
 message-oriented service, but allows applications to attach a time-line
 to messages. Messages are (re-)transmitted as under standard TCP within
@@ -742,7 +756,7 @@ to make effective use of the network, need to deploy new transport services
 and protocols
 
 seems likely that the appropriate long-term approach for doing this is to
-repurpose UDP as a demultiplexing layer for higher-layer protocols. 
+repurpose UDP as a demultiplexing layer for higher-layer protocols.
 
 in the short term, we need to deal with networks that block UDP, and be
 able to run over TCP.
