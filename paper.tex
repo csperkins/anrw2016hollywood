@@ -19,8 +19,16 @@
 \usepackage{color}
 \usepackage{balance}
 \usepackage{tabularx}
+\usepackage{rotating}
+\usepackage{tikz}
 
-\newcommand*\rot{\rotatebox{90}}
+\makeatletter
+\global\let\tikz@ensure@dollar@catcode=\relax
+\makeatother
+
+\newcommand{\fail}{\tikz\draw[red,fill=red] (0,0) circle (.5ex);}
+\newcommand{\pass}{\tikz\draw[green,fill=green] (0,0) circle (.5ex);}
+\newcommand{\okay}{\tikz\draw[orange,fill=orange] (0,0) circle (.5ex);}
 
 \newcommand{\todo}[1]{\textbf{\textcolor{red}{To do -- #1}}}
 
@@ -367,7 +375,6 @@ has expired. A partial reliability service follows
 from this deadline and dependency service: messages will be reliably
 transmitted until they expire.
 
-
 \begin{table}
   \centering
   \begin{tabular}{ll}
@@ -603,7 +610,8 @@ reset was observed.
 
 We conducted further deployment experiments using
 inconsistent retransmissions \cite{mcquistin2016hollywood}, testing all
-major UK providers. We found that 100\% of tested fixed-line networks
+major UK providers. The results are shown in Table \ref{tab:deployability}.
+We found that 100\% of tested fixed-line networks
 delivered inconsistent retransmissions successfully. However, the delivery
 of the original segment is common on cellular networks, with only 25\% of
 tested networks delivering inconsistent retransmissions successfully and
@@ -613,6 +621,31 @@ were lost, but were retransmitted (with the IP address of the sender) by a
 middlebox in the network. It is likely that these caches are deployed close
 to the wireless link, given its relatively high rate of non-congestive
 loss.
+
+\begin{table}
+  \centering
+    \begin{tabular}{llcc}
+    \toprule
+    & ISP & Port 4001 & Port 80 \\ \midrule
+    \textbf{Fixed-line} & Andrews \& Arnold & \pass & \pass \\
+    & BT & \pass & \pass \\
+    & Demon & \pass & \pass \\
+    & EE & \pass & \pass \\
+    & Eclipse & \pass & \pass \\
+    & Sky & \pass & \pass \\
+    & TalkTalk & \pass & \pass \\
+    & Virgin Media & \pass & \pass \\ \midrule
+    \textbf{Cellular} & EE & \okay & \okay \\
+    & O2 & \okay & \okay \\
+    & Three & \pass & \pass \\
+    & Vodafone & \pass & \okay \\
+    \bottomrule
+    \end{tabular}
+  \caption[]{Deployability of inconsistent retransmissions, where \pass \thinspace
+  indicates successful delivery, \okay \thinspace indicates delivery of the original
+  data, and \fail \thinspace indicates connection failure (none observed)}
+  \label{tab:deployability}
+\end{table}
 
 These deployment experiments suggest that our protocol should be
 flexible: inconsistent retransmissions may not be delivered, and we should
