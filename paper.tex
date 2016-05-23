@@ -673,20 +673,20 @@ loss.
 \end{table}
 
 These deployment experiments suggest that our protocol should be
-flexible: inconsistent retransmissions may not be delivered, and we should
+flexible: inconsistent retransmissions might not be delivered, and we should
 handle reception of the original segment. If the protocol detects that
-inconsistent retransmissions are not being delivered, then the mechanism
+inconsistent retransmissions are not being delivered, they
 can be disabled for the connection. Further, if a connection reset occurs,
 then the connection should be retried with the mechanism disabled.
 
-The use of inconsistent retransmissions may interact negatively with
-caching and resegmenting middleboxes, resulting in the corruption of
+Use of inconsistent retransmissions may interact negatively with
+caching and re-segmenting middleboxes, resulting in the corruption of
 messages between sender and receiver. A message may be formed from the
 original message, and an inconsistent retransmission, given how the
 mechanism uses the TCP sequence space. To protect against this, a checksum
 must be attached to each message, to allow the receiver to verify its
 integrity. The role of a checksum may also be fulfilled by using a secure
-transport protocol, such as DTLS \cite{rfc:6347}.
+transport, such as DTLS \cite{rfc:6347}.
 
 %==================================================================================================
 \section{Realising Transport Services}
@@ -703,8 +703,8 @@ QUIC protocol \cite{draft-tsvwg-quic-protocol-02}.
 The former is a peer-to-peer protocol, comprising an SCTP association
 running over DTLS, itself running over a UDP flow negotiated via an SDP
 \cite{RFC4566} offer/answer exchange \cite{RFC3264} as part of a WebRTC
-session \cite{jennings:2013:rtcweb} (the WebRTC media channel uses RTP
-running over UDP also, further showing the utility of UDP-based data).
+session \cite{jennings:2013:rtcweb} (WebRTC media uses RTP
+over UDP also, further showing the utility of UDP-based data).
 This has been deployed in popular web browsers, with global deployment, and
 demonstrated to be effective.  The latter is implemented by Google in their
 Chrome browser, and used as an alternative to TCP has a significant
@@ -729,7 +729,7 @@ proposal \cite{mcquistin2016hollywood}.
 \begin{figure}[t]
  \centering
  \includegraphics[scale=0.45]{figures/tcp-hollywood.pdf}
- \caption{TCP Hollywood architecture \todo{too similar to NOSSDAV fig 1?}}
+  \caption{TCP Hollywood architecture}
 \label{diagram:tcp-hollywood}
 \end{figure}
 
