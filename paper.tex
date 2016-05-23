@@ -30,6 +30,11 @@
 \newcommand{\pass}{\tikz\draw[green,fill=green] (0,0) circle (.5ex);}
 \newcommand{\okay}{\tikz\draw[orange,fill=orange] (0,0) circle (.5ex);}
 
+\usepackage{xspace}
+
+\newcommand{\ie}{{i.e.}\xspace}
+\newcommand*\rot{\rotatebox{90}}
+
 \newcommand{\todo}[1]{\textbf{\textcolor{red}{To do -- #1}}}
 
 %==================================================================================================
@@ -224,51 +229,62 @@ coupling between application and transport, so enabling deployment of new
 transport protocols.
 
 %--------------------------------------------------------------------------------------------------
-\subsection{Transport Services}
+\subsection{Timing and Transport Services}
 
-The work in TAPS is valuable, because it gives us a vocabulary for
-discussing the components of transport protocols.  We can then use that
-vocabulary when discussing the needs of real-time applications, and the
-protocols needed to support those needs.
+The work in TAPS provides a vocabulary for discussing the components of
+transport protocols.  The vocabulary is useful when discussing the needs of
+real-time applications, and the protocols to support them.
 
-The essential feature of real-time applications is clearly timing. That is,
-since these applications convey real-time data, they all have some concept
-of a \emph{deadline} by which that data must be presented, after which it
-becomes useless.
-The deadline might be short or long. Interactive applications, such as
-telephony, video conferencing, or telepresence, require low end-to-end
-latency, with the deadline for presenting the media (playing the audio,
-displaying the video frame) being tens, or perhaps low hundreds, of
-milliseconds after it was captured. Non-interactive applications, such as
-broadcast TV, may have deadlines in the order of seconds, or even tens of
-seconds for on-demand programming.
-The deadlines in many networked multimedia applications are unusual when
-compared to other real-time systems. They are simultaneously flexible and
-strict: flexible in that the exact value of the deadline is typically not
-important, provided it is of the right order-of-magnitude for the
-application, but strict in that any particular deadline provides a hard
-cut-off, after which the data is useless.
+Timing is the most salient feature of real-time applications. Since their data
+must be conveyed with real-time demands, they all have some concept of a
+\emph{deadline}. Data that fails to present within the deadline is otherwise
+useless.
+% Deadlines may be short or long.
+The `slack' in a deadline depends on the application. Interactive applications,
+such as telephony, video conferencing, or telepresence, require low end-to-end
+latency. Their deadlines for presenting the media, \ie playing the audio and
+displaying the video frame, range from tens to a few hundred milliseconds.
+Non-interactive application deadlines associated with broadcast and on-demand
+programming are on the order of seconds.
+% , such as broadcast TV, may have deadlines on the order of seconds,
+% or even tens of seconds for on-demand programming.
 
-The presence of deadlines, in a network that offers only a best-effort
-packet delivery service, implies that the transport must provide
-\emph{partial reliability}.
-The network has non-zero probability of losing any particular packet.
-If forward error correction is used to repair loss, this implies there is
-always some probability that a particular packet will be non-recoverable.
-If retransmission is used to recover from losses, there is the potential
-for unbounded delay, since any retransmission may itself be lost.
-These probabilities can be estimated, to give probabilistic constraints
-on loss and delay, but will be non-zero. Accordingly, to meet deadlines,
-the transport must support partial reliability service, accepting that
-it may not be able to deliver all data by its deadline.
-Many real-time applications run over TCP today, and TCP does not offer a
-partial reliability service. This results in occasional play-out stalls,
-when the transport blocks the application because a retransmission takes
-too long. These stalls are one of the primary causes of poor user
-experience in streaming applications, and are directly caused by the lack
-of partial reliability in TCP. Missing one frame that has not been
-delivered by its deadline is much less disruptive than a stall in play-out.
+Networked multimedia deadlines are unusual when compared to other real-time
+systems. They are simultaneously flexible and strict: flexible in that the exact
+value of the deadline is typically not important, provided it is of the right
+order-of-magnitude for the application, but strict in that any particular
+deadline provides a hard cut-off, after which the data is useless. \todo{Is this para necessary at all? Its contribution is unclear and/or unconvincing -- flexible is fine; strict is less believable, \ie
+how are RT systems any different when the deadline expires? (Many RTSs will
+discard, too. Ultimately, I get what it is trying to say; I'm less sure it needs saying) Maybe the following(?):}
+% When compared to conventional real-time systems, networked multimedia
+% deadlines are neither soft nor hard.
+It is useful to draw a distinction between in networked multimedia deadlines and
+deadlines in conventional real-time systems. A multimedia deadline is neither soft, since arrivals played after a deadline contribute to poor experience; nor are deadlines hard, since occasional missed messages can be tolerated.
 
+\subsection{Partial Reliability}
+In a network that offers only a best-effort packet delivery service, deadlines
+constrain delivery to \emph{partial reliability}.
+%The network has non-zero probability of losing any particular packet.
+For example, when used to repair loss, the limits of forward error correction
+imply some probability that packet will be non-recoverable. By contrast,
+retransmissions used to recover from loss have potentially unbounded delay
+(since any retransmission may itself be lost).
+% These probabilities can be estimated, to give probabilistic constraints on
+% loss and delay, but will be non-zero. Accordingly, to meet deadlines the
+Accordingly, a transport protocol that meets deadlines should provide partial
+reliability, acknowledging that it may be unable to deliver all data by its
+deadline.
+
+Many real-time applications run over TCP today, though TCP offers no partial
+reliability service. TCP's full reliability can lead to play-out stalls
+when the application is blocked by retransmissions that take too
+long. These stalls are one of the primary causes of poor user experience in
+streaming applications.
+% , and are directly caused by the lack of partial reliability in TCP.
+For the applications under scrutiny, a missed frame that fails to deliver by its
+deadline is much less disruptive than a stall in play-out.
+
+\subsection{Message-oriented Dependencies}
 Given deadlines and partial reliability, the next important transport
 service is \emph{dependency management}. There is no point in sending data
 that cannot be used because it depends on previous data that was not
@@ -292,6 +308,7 @@ These could be sent across multiple transport-layer connections, but
 overheads can be reduced by multiplexing these flows on a single
 connection. A \emph{sub-stream} service allows this.
 
+\subsection{Connection and Congestion Control}
 We note that \emph{congestion control} is important. Clearly, the historic
 belief that real-time applications require an isochronous channel, and
 cannot be subjected to congestion control, is not practical on the
@@ -462,7 +479,7 @@ contents. This is not, of course, how the real network operates.
 There are performance and security benefits that can be attained by
 adding transport-layer functionality \emph{within} the network. For
 example, a firewall can better protect the network if it can detect payload
-anomalies. 
+anomalies.
 
 The implication of this reality is that it is difficult to deploy new
 transport protocols. The installed base of NATs, firewalls, and other
