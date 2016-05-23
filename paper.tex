@@ -816,26 +816,23 @@ be feasible for real-time applications.
 %  - Acknowledge weaknesses in your approach.
 %  - Ensure related work is accurate and up-to-date
 
-The Minion protocol suite \cite{nowlan:2012:minion} includes uTCP, a
-protocol that uses TCP as a substrate to provide an unordered,
-message-oriented service to applications. While this enables many of
-the transport services described in Section \ref{sec:services}, support for
-partial reliability, deadlines, and dependencies is not provided.
+Related changes to TCP are made by Minion protocol \cite{nowlan:2012:minion},
+that uses TCP as a substrate to provide an unordered, message-oriented
+service to applications, enabling some of the transport services described
+in Section \ref{sec:services}, but without support for partial reliability,
+deadlines, and dependencies.
 Time-Lined TCP (TLTCP) \cite{mukherjee:2000:timelines} similarly provides a
 message-oriented service, but allows applications to attach a time-line
 to messages. Messages are (re-)transmitted as under standard TCP within
 their time-line, after which they are discarded. The mechanism by which
-this service is provided (i.e., the introduction of gaps in the sequence
-space) reduces deployability.
+this service is provided (introducing gaps in the sequence space) hinders
+deployment. 
 
-\todo{QUIC}
-
-\todo{SPUD}
-
-\todo{WebRTC data channel - SCTP over UDP}
-
-\todo{RFC6773 - DCCP over UDP}
-
+QUIC \cite{draft-tsvwg-quic-protocol-02} demonstrates that similar services
+can be provided by a new protocol running over UDP, while \cite{RFC6773} and
+\cite{draft-ietf-rtcweb-data-channel-13} demonstrate that existing protocols,
+DCCP and SCTP, can also be effectively tunnelled over UDP. Fallback to TCP
+is discussed in this paper, and on our previous work \cite{mcquistin2016hollywood}.
 
 %==================================================================================================
 \section{Conclusions}
