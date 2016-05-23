@@ -19,7 +19,9 @@
 \usepackage{color}
 \usepackage{balance}
 \usepackage{tabularx}
+\usepackage{xspace}
 
+\newcommand{\ie}{{i.e.}\xspace}
 \newcommand*\rot{\rotatebox{90}}
 
 \newcommand{\todo}[1]{\textbf{\textcolor{red}{To do -- #1}}}
@@ -218,28 +220,32 @@ transport protocols.
 %--------------------------------------------------------------------------------------------------
 \subsection{Transport Services}
 
-The work in TAPS is valuable, because it gives us a vocabulary for
-discussing the components of transport protocols.  We can then use that
-vocabulary when discussing the needs of real-time applications, and the
-protocols needed to support those needs.
+The work in TAPS provides a vocabulary for discussing the components of
+transport protocols.  The vocabulary is useful when discussing the needs of
+real-time applications, and the protocols to support them.
 
-The essential feature of real-time applications is clearly timing. That is,
-since these applications convey real-time data, they all have some concept
-of a \emph{deadline} by which that data must be presented, after which it
-becomes useless.
-The deadline might be short or long. Interactive applications, such as
-telephony, video conferencing, or telepresence, require low end-to-end
-latency, with the deadline for presenting the media (playing the audio,
-displaying the video frame) being tens, or perhaps low hundreds, of
-milliseconds after it was captured. Non-interactive applications, such as
-broadcast TV, may have deadlines in the order of seconds, or even tens of
-seconds for on-demand programming.
-The deadlines in many networked multimedia applications are unusual when
-compared to other real-time systems. They are simultaneously flexible and
-strict: flexible in that the exact value of the deadline is typically not
-important, provided it is of the right order-of-magnitude for the
-application, but strict in that any particular deadline provides a hard
-cut-off, after which the data is useless.
+Timing is the most salient feature of real-time applications. Since their data
+must be conveyed with real-time demands, they all have some concept of a
+\emph{deadline}. Data that fails to present within the deadline is otherwise
+useless.
+% Deadlines may be short or long.
+The `slack' in a deadline depends on the application. Interactive applications,
+such as telephony, video conferencing, or telepresence, require low end-to-end
+latency. Their deadlines for presenting the media, \ie playing the audio and
+displaying the video frame, range from tens to a few hundred milliseconds.
+Non-interactive application deadlines associated with broadcast and on-demand
+programming are on the order of seconds.
+% , such as broadcast TV, may have deadlines on the order of seconds,
+% or even tens of seconds for on-demand programming.
+
+Networked multimedia deadlines are unusual when compared to other real-time
+systems. They are simultaneously flexible and strict: flexible in that the exact
+value of the deadline is typically not important, provided it is of the right
+order-of-magnitude for the application, but strict in that any particular
+deadline provides a hard cut-off, after which the data is useless. \todo{this
+para is largely unconvincing -- flexible is fine; strict is less believable, \ie
+how are RT systems any different when the deadline expires? (Many RTSs will
+discard, too.)}
 
 The presence of deadlines, in a network that offers only a best-effort
 packet delivery service, implies that the transport must provide
@@ -455,7 +461,7 @@ contents. This is not, of course, how the real network operates.
 There are performance and security benefits that can be attained by
 adding transport-layer functionality \emph{within} the network. For
 example, a firewall can better protect the network if it can detect payload
-anomalies. 
+anomalies.
 
 The implication of this reality is that it is difficult to deploy new
 transport protocols. The installed base of NATs, firewalls, and other
