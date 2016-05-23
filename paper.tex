@@ -811,27 +811,37 @@ space) reduces deployability.
 
 The standard transport protocols, TCP and UDP, are not well-suited for
 real-time applications. Both can be made to work, but the existence of
-numerous papers exploring how to make media play-out over TCP reliable,
+numerous papers exploring how to make media play-out over TCP reliable, 
 and almost as extensive a collection discussing UDP-based protocol design,
 suggests that this is difficult to do well. To make effective use of the
-network, simplify real-time application design and implementation, so it
-doesn't require expert transport protocol knowledge to build a new
-application, and hence support innovation, we need to deploy new transport
-services and protocols. 
+network, and simplify real-time application design and implementation, we
+need to deploy new transport services and protocols that allow innovative
+applications to be developed by users who are not experts in transport 
+protocol design. We discussed requirements such for a new transport, in
+the context of the TAPS framework, and outlined a straw-man abstract API,
+in Section \ref{sec:services}.
 
-seems likely that the appropriate long-term approach for doing this is to
-repurpose UDP as a demultiplexing layer for higher-layer protocols.
+It seems likely that the right long-term approach for doing this is to
+repurpose UDP as a demultiplexing layer for higher-layer protocols. We can
+then deploy an appropriate transport protocol framework as a user-space
+library, that can be reused as appropriate. In the short term, however, 
+there are sufficient networks that block UDP, that any new transport
+protocol needs to be able to run over TCP. Sections \ref{sec:ossification}
+and \ref{sec:partial} discuss how this can be done, and suggest from some
+initial measurement studies that this may be feasible to deploy. Section
+\ref{sec:realising} considers prototypes that present such services over
+UDP, and presents our initial prototype demonstrated for TCP-based use.
 
-in the short term, we need to deal with networks that block UDP, and be
-able to run over TCP.
-our initial work shows that this is frequently possible, and works well
-enough to offer benefit.
+Making effective use of the TAPS concept to support real-time multimedia
+requires making significant changes to the TCP specification and API, if 
+such applications are to be able to fall-back to TCP from UDP, and still
+achieve their performance needs.
 
 %==================================================================================================
 %\section{Acknowledgements}
-
+%
 % Acknowledge funding sources.
-
+%
 %==================================================================================================
 \bibliographystyle{abbrv}
 \bibliography{paper}
