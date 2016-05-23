@@ -567,8 +567,8 @@ implement alternatives that seek stability, or compatibility with the
 dictates of a video codec, rather than traditional ``TCP Friendly''
 congestion control -- even if implemented within TCP.
 
-The API that is exposed to applications using TCP is not visible to the
-network, and can be changed. Relaxing the API to enable the out-of-order
+The API that is exposed to applications using TCP is invisible from the
+network, and can be changed. Relaxing the API to enable out-of-order
 delivery of segments is trivial: segments are delivered to the application
 in the order that they arrive, with their TCP sequence attached. The TCP
 sequence number can be passed to the application using the existing
