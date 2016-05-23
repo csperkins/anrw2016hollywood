@@ -218,7 +218,7 @@ coupling between application and transport, so enabling deployment of new
 transport protocols.
 
 %--------------------------------------------------------------------------------------------------
-\subsection{Transport Services}
+\subsection{Timing and Transport Services}
 
 The work in TAPS provides a vocabulary for discussing the components of
 transport protocols.  The vocabulary is useful when discussing the needs of
@@ -242,31 +242,38 @@ Networked multimedia deadlines are unusual when compared to other real-time
 systems. They are simultaneously flexible and strict: flexible in that the exact
 value of the deadline is typically not important, provided it is of the right
 order-of-magnitude for the application, but strict in that any particular
-deadline provides a hard cut-off, after which the data is useless. \todo{this
-para is largely unconvincing -- flexible is fine; strict is less believable, \ie
+deadline provides a hard cut-off, after which the data is useless. \todo{Is this para necessary at all? Its contribution is unclear and/or unconvincing -- flexible is fine; strict is less believable, \ie
 how are RT systems any different when the deadline expires? (Many RTSs will
-discard, too.)}
+discard, too. Ultimately, I get what it is trying to say; I'm less sure it needs saying) Maybe the following(?):}
+% When compared to conventional real-time systems, networked multimedia
+% deadlines are neither soft nor hard.
+It is useful to draw a distinction between in networked multimedia deadlines and
+deadlines in conventional real-time systems. A multimedia deadline is neither soft, since arrivals played after a deadline contribute to poor experience; nor are deadlines hard, since occasional missed messages can be tolerated.
 
-The presence of deadlines, in a network that offers only a best-effort
-packet delivery service, implies that the transport must provide
-\emph{partial reliability}.
-The network has non-zero probability of losing any particular packet.
-If forward error correction is used to repair loss, this implies there is
-always some probability that a particular packet will be non-recoverable.
-If retransmission is used to recover from losses, there is the potential
-for unbounded delay, since any retransmission may itself be lost.
-These probabilities can be estimated, to give probabilistic constraints
-on loss and delay, but will be non-zero. Accordingly, to meet deadlines,
-the transport must support partial reliability service, accepting that
-it may not be able to deliver all data by its deadline.
-Many real-time applications run over TCP today, and TCP does not offer a
-partial reliability service. This results in occasional play-out stalls,
-when the transport blocks the application because a retransmission takes
-too long. These stalls are one of the primary causes of poor user
-experience in streaming applications, and are directly caused by the lack
-of partial reliability in TCP. Missing one frame that has not been
-delivered by its deadline is much less disruptive than a stall in play-out.
+\subsection{Partial Reliability}
+In a network that offers only a best-effort packet delivery service, deadlines
+constrain delivery to \emph{partial reliability}.
+%The network has non-zero probability of losing any particular packet.
+For example, when used to repair loss, the limits of forward error correction
+imply some probability that packet will be non-recoverable. By contrast,
+retransmissions used to recover from loss have potentially unbounded delay
+(since any retransmission may itself be lost).
+% These probabilities can be estimated, to give probabilistic constraints on
+% loss and delay, but will be non-zero. Accordingly, to meet deadlines the
+Accordingly, a transport protocol that meets deadlines should provide partial
+reliability, acknowledging that it may be unable to deliver all data by its
+deadline.
 
+Many real-time applications run over TCP today, though TCP offers no partial
+reliability service. TCP's full reliability can lead to play-out stalls
+when the application is blocked by retransmissions that take too
+long. These stalls are one of the primary causes of poor user experience in
+streaming applications.
+% , and are directly caused by the lack of partial reliability in TCP.
+For the applications under scrutiny, a missed frame that fails to deliver by its
+deadline is much less disruptive than a stall in play-out.
+
+\subsection{Message-oriented Dependencies}
 Given deadlines and partial reliability, the next important transport
 service is \emph{dependency management}. There is no point in sending data
 that cannot be used because it depends on previous data that was not
@@ -290,6 +297,7 @@ These could be sent across multiple transport-layer connections, but
 overheads can be reduced by multiplexing these flows on a single
 connection. A \emph{sub-stream} service allows this.
 
+\subsection{Connection and Congestion Control}
 We note that \emph{congestion control} is important. Clearly, the historic
 belief that real-time applications require an isochronous channel, and
 cannot be subjected to congestion control, is not practical on the
