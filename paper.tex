@@ -637,7 +637,17 @@ be feasible for real-time applications.
 %  - Acknowledge weaknesses in your approach.
 %  - Ensure related work is accurate and up-to-date
 
-\todo{Stephen: TCP minion; time-lined TCP}
+The Minion protocol suite \cite{nowlan:2012:minion} includes uTCP, a
+protocol that uses TCP as a substrate to provide an unordered,
+message-oriented service to applications. While this enables many of
+the transport services described in Section \ref{sec:services}, support for
+partial reliability, deadlines, and dependencies is not provided. 
+Time-Lined TCP (TLTCP) \cite{mukherjee:2000:timelines} similarly provides a
+message-oriented service, but allows applications to attach a time-line
+to messages. Messages are (re-)transmitted asunder standard TCP within
+their time-line, after which they are discarded. The mechanism by which
+this service is provided (i.e., the introduction of gaps in the sequence
+space) reduces deployability.
 
 \todo{QUIC}
 
