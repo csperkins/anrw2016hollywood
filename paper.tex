@@ -563,7 +563,7 @@ this is not required by the protocol. TCP Vegas \cite{brakmo:1994:tcp-vegas}
 is perhaps the best known approach that changes these constraints, with a
 delay-based algorithm that reduces latency. It would also be possible to
 implement alternatives that seek stability, or compatibility with the
-dictates of a video codec, rather than the traditional ``TCP Friendly''
+dictates of a video codec, rather than traditional ``TCP Friendly''
 congestion control -- even if implemented within TCP.
 
 The API that is exposed to applications using TCP is not visible to the
@@ -577,7 +577,7 @@ byte-stream abstraction, and so the API should be further modified to
 provide a message-oriented abstraction. The Berkeley sockets API already
 supports such an abstraction for datagram protocols.
 
-These changes could address many of the transport service needs we have for
+These changes could address many of the transport service needs for
 real-time applications, but still leave a critical issue of how to improve
 timing behaviour. Specifically, how to enable partial reliability for TCP,
 after which it is possible to layer-on support for managing deadlines and
@@ -609,7 +609,7 @@ static: a given TCP sequence number may be relate to different messages at
 different times. Therefore, an application-level sequence number is
 required to allow messages to be uniquely identified.
 
-When a TCP segment is to be retransmitted, the current mapping between its
+When a TCP segment is to be retransmitted, the mapping between its
 sequence number and application-level sequence numbers is used to determine
 which messages within the segment are to be retransmitted. A liveness check
 is performed on these messages, to determine that (i) the message will
