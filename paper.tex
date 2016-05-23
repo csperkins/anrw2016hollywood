@@ -552,18 +552,25 @@ on the network that are performing payload inspection. These middleboxes
 may interpret this behaviour relating to an attack. For example, a
 man-on-the-side attack exhibits similar behaviour, where a malicious host
 is injecting data into an existing TCP flow. As a result, our connection
-may be disrupted. Honda et al. \cite{honda:2011:extend-tcp} conducted
+may be disrupted. Honda \emph{et al}.\ \cite{honda:2011:extend-tcp} conducted
 experiments across 135 paths on the Internet, to determine support for
-inconsistent retransmissions. The observed that the majority of paths
+inconsistent retransmissions. They observed that the majority of paths
 delivered inconsistent retransmissions successfully. On Port 80 (HTTP), the
 original segment was delivered on 7\% of paths tested. Only one connection
 reset was observed. 
 
 We conducted further deployment experiments using
-inconsistent retransmissions \cite{mcquistin2016hollywood}, and found that
-fixed-line networks delivered inconsistent retransmissions successfully,
-but that delivery of the original segment was common on cellular networks.
-\todo{expand this}
+inconsistent retransmissions \cite{mcquistin2016hollywood}, testing all 
+major UK providers. We found that 100\% of tested fixed-line networks
+delivered inconsistent retransmissions successfully. However, the delivery
+of the original segment is common on cellular networks, with only 25\% of
+tested networks delivering inconsistent retransmissions successfully and
+reliably. The behaviour observed when evaluating cellular networks was
+consistent with that of a transparent, split-connection TCP cache. Segments
+were lost, but were retransmitted (with the IP address of the sender) by a
+middlebox in the network. It is likely that these caches are deployed close
+to the wireless link, given its relatively high rate of non-congestive
+loss.
 
 These deployment experiments suggest that our protocol should be
 flexible: inconsistent retransmissions may not be delivered, and we should
@@ -572,7 +579,14 @@ inconsistent retransmissions are not being delivered, then the mechanism
 can be disabled for the connection. Further, if a connection reset occurs,
 then the connection should be retried with the mechanism disabled.
 
-\todo{Add discussion on checksumming to maintain message integrity}
+The use of inconsistent retransmissions may interact negatively with
+caching and resegmenting middleboxes, resulting in the corruption of
+messages between sender and receiver. A message may be formed from the
+original message, and an inconsistent retransmission, given how the
+mechanism uses the TCP sequence space. To protect against this, a checksum
+must be attached to each message, to allow the receiver to verify its
+integrity. The role of a checksum may also be fulfilled by using a secure
+transport protocol, such as DTLS \cite{rfc:6347}.
 
 %==================================================================================================
 \section{Realising Transport Services}
