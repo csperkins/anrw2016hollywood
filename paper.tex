@@ -81,9 +81,9 @@
 
 Real-time applications require a set of transport services not currently
 provided by widely-deployed transport protocols. Ossification prevents the
-deployment of a novel protocols, restricting solutions to protocols using
+deployment of novel protocols, restricting solutions to protocols using
 either TCP or UDP as a substrate. We describe the transport services
-required by real-time applications. We show that, in the short term (i.e.,
+required by real-time applications. We show that, in the short-term (i.e.,
 while UDP is blocked at current levels), TCP offers a feasible substrate
 for providing these services. Over the longer term, protocols using UDP
 may reduce the number of networks blocking UDP, enabling a shift towards
@@ -423,7 +423,7 @@ transmitted until they expire.
   \centering
   \begin{tabularx}{\textwidth}{llll}
     \toprule
-      Transport Service            & Function & Parameters                                     & Return Value \\
+      Transport Service            & Function & Parameters                                     & Return Value(s) \\
     \midrule
                                    & \texttt{socket}
                                               & \texttt{af} -- Address family                  & Socket descriptor \\
@@ -840,14 +840,14 @@ suggests that this is difficult to do well. To make effective use of the
 network, and simplify real-time application design and implementation, we
 need to deploy new transport services and protocols that allow innovative
 applications to be developed by users who are not experts in transport 
-protocol design. We discussed requirements such for a new transport, in
+protocol design. We discussed requirements for such a new transport, in
 the context of the TAPS framework, and outlined a straw-man abstract API,
 in Section \ref{sec:services}.
 
 It seems likely that the right long-term approach for doing this is to
 repurpose UDP as a demultiplexing layer for higher-layer protocols. We can
 then deploy an appropriate transport protocol framework as a user-space
-library, that can be reused as appropriate. In the short term, however, 
+library, that can be reused as appropriate. In the short-term, however, 
 there are sufficient networks that block UDP, that any new transport
 protocol needs to be able to run over TCP. Sections \ref{sec:ossification}
 and \ref{sec:partial} discuss how this can be done, and suggest from some
