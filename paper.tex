@@ -410,7 +410,7 @@ specified by the application. \todo{CSP: check this}
 The Internet architecture, in principle, allows free innovation at the
 transport layer, provided the underlying network (IP) layer is unchanged.  
 Routers should inspect the source addresses of packets to perform network
-ingress filtering \cite{RFC2827}, and the destination addresses to route
+ingress filtering \cite{rfc:2827}, and the destination addresses to route
 packets to the correction destination, but should not inspect their
 contents. This is not, of course, how the real network operates. 
 
@@ -434,10 +434,11 @@ minimal additional services over the IP layer, allowing great flexibility
 in innovation for protocols tunnelled on top. Provided middleboxes do not
 inspect the payload too carefully, the only real cost to innovation, when
 compared to a native transport protocol running over IP, is a few bytes of
-additional header. Examples in this space include RTP \cite{RFC3550}, one
+additional header. Examples in this space include RTP \cite{rfc:3550}, one
 of the most widely deployed real-time transport protocols; the WebRTC Data
-Channel \cite{}, which tunnels peer-to-peer SCTP associations over a DTLS
-association over UDP; and QUIC \cite{}, which provides a modern alternative 
+Channel \cite{draft-ietf-rtcweb-data-channel-13}, which tunnels
+peer-to-peer SCTP associations over a DTLS association over UDP; and QUIC
+\cite{draft-tsvwg-quic-protocol-02}, which provides a modern alternative 
 to TCP, implemented over UDP. 
 
 Despite these advantages, UDP can be problematic as a substrate for new
@@ -583,7 +584,7 @@ we have shown that we can provide all of the transport services needed by
 real-time applications, using either TCP or UDP. 
 
 Evidence that these services can be deployed above UDP exists in the form
-of the WebRTC data channel \cite{}.  
+of the WebRTC data channel \cite{draft-ietf-rtcweb-data-channel-13}.  
 \todo{expand}
 
 \todo{also QUIC}
@@ -608,7 +609,8 @@ Taken together, the wide experiences with the WebRTC Data Channel and QUIC
 demonstrate that the transport services necessary to support real-time
 traffic could be deployed running over UDP. Our work prototyping the TCP
 Hollywood protocol, and earlier measurements by Honda \emph{et al}.\
-\cite{} also suggest that deployment over TCP is possible.
+\cite{honda:2011:extend-tcp} also suggest that deployment over TCP is
+possible.
 
 The challenge for the future is in combining such techniques below a common
 API, so that an application can transparently switch between UDP-based and
