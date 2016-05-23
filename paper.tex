@@ -20,6 +20,8 @@
 \usepackage{balance}
 \usepackage{tabularx}
 
+\newcommand*\rot{\rotatebox{90}}
+
 \newcommand{\todo}[1]{\textbf{\textcolor{red}{To do -- #1}}}
 
 %==================================================================================================
@@ -411,10 +413,8 @@ services: messages will be reliably transmitted until they expire.
       Sub-streams                  &          & \texttt{substream} -- Substream identifier & \\
                                    & \texttt{recv\_message}  
                                               & \texttt{sd} -- Socket descriptor               & Number of bytes received \\
-                                   &          & \texttt{buf} -- Buffer for message data & \\
+                                   &          & \texttt{buf} -- Buffer for message data        & Substream identifier \\
                                    &          & \texttt{len} -- Size of \texttt{buf} & \\
-      Sub-streams                  &          & \texttt{substream} -- Substream identifier & \\
-                                   &          & \todo{return value, rather than param?} & \\
     \bottomrule
   \end{tabularx}
   \caption{Outline transport API for real-time applications. Return values
@@ -438,7 +438,10 @@ ingress filtering \cite{rfc:2827}, and the destination addresses to route
 packets to the correction destination, but should not inspect their
 contents. This is not, of course, how the real network operates. 
 
-\todo{outline why this is not true in practice}
+There are performance and security benefits that can be attained by
+adding transport-layer functionality \emph{within} the network. For
+example, a firewall can better protect the network if it can detect payload
+anomalies. 
 
 The implication of this reality is that it is difficult to deploy new 
 transport protocols. The installed base of NATs, firewalls, and other
@@ -484,7 +487,12 @@ running over UDP \cite{roskind2013quic}, but it is not clear that the set
 of hosts running their Chrome browser is representative of all Internet
 environments). 
 
-\todo{Other motivation for using TCP: HTTP-based streaming protocols}
+Beyond the availability of UDP, it is often necessary to use TCP because
+HTTP is being used at the application-layer. For real-time systems, this
+is likely to be an HTTP adaptive streaming (HAS) protocol, such as
+MPEG-DASH or Apple's HLS. Using TCP as a substrate enables the use of these
+protocols, allowing applications to benefit from the existing
+infrastructure that supports them.
 
 TCP is a more complex choice for innovation. It is a more sophisticated 
 protocol than UDP, with complex headers, and a protocol state machine
@@ -522,10 +530,6 @@ Berkeley sockets API, either with the received data, or using
 byte-stream abstraction, and so the API should be further modified to
 provide a message-oriented abstraction. The Berkeley sockets API already
 supports such an abstraction for datagram protocols.
-
-\todo{discuss how the API can be modified to accept/delivery a sequence
-      of messages, rather than a byte stream, and how with consistent
-      segmentation at the sender and COBS framing, this can be efficient}
 
 These changes could address many of the transport service needs we have for
 real-time applications, but still leave a critical issue of how to improve
