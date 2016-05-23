@@ -371,16 +371,16 @@ into four categories:
 \end{itemize}
 
     It is instructive to compare the partially reliable send and receive
-    functions to their TCP-like counterparts. The \texttt{send\_message()} call
-    takes four additional parameters compared to the standard Berkeley Sockets
-    API. These are 1) a message sequence number, that can be used to re-order
-    messages and detect message loss; 2) a relative deadline, which is combined
-    with an estimate of the current round-trip-time, and the time that the
-    message has spent in the sending buffer, to determine if a message will
-    arrive in time to be played-out; 3) the message sequence number of any
-    message on which this depends, for example, of a video I-frame on which a
-    P-frame is predicted; and 4) a sub-stream identifier, used, for example, to
-    differentiate audio, video, sub-title, control, and repair streams.
+    functions to their Berkeley Sockets API counterparts. The
+    \texttt{send\_message()} call takes four additional parameters. These are 1)
+    a message sequence number, that can be used to re-order messages and detect
+    message loss; 2) a relative deadline, which is combined with an estimate of
+    the current round-trip-time, and the time that the message has spent in the
+    sending buffer, to determine if a message will arrive in time to be
+    played-out; 3) the message sequence number of any message on which this
+    depends, for example, of a video I-frame on which a P-frame is predicted;
+    and 4) a sub-stream identifier, used, for example, to differentiate audio,
+    video, sub-title, control, and repair streams.
 
     The \texttt{recv\_message()} call returns the sequence number, dependency
     information, and sub-stream identifier along with any received message,
