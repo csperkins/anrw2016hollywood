@@ -630,6 +630,27 @@ services running over TCP.
   Obviously we need to change TCP congestion control too.
 }
 
+The architecture of TCP Hollywood \cite{mcquistin2016hollywood} is shown in
+Figure \ref{diagram:tcp-hollywood}. TCP Hollywood provides all of the
+services described in Section \ref{sec:services}, with functionality split
+across an intermediary layer (in userspace), and a set of modifications to
+the kernel. The intermediary layer is responsible for providing the
+message-oriented abstraction, and exposing the API for partial reliability.
+The kernel modifications implement the deadline and dependency services,
+as well as enabling out-of-order delivery of incoming segments. This split
+allows applications to use a single API, whether or not the kernel
+modifications are available. TCP Hollywood inherits standard TCP's
+congestion control mechanism. Clearly, this loss-based mechanism is not
+suitable for real-time applications, and a delay-based algorithm should
+be adopted.
+
+\begin{figure}[t]
+ \centering
+ \includegraphics[scale=0.965]{figures/tcp-hollywood.pdf}
+ \caption{TCP Hollywood architecture}
+\label{diagram:tcp-hollywood}
+\end{figure}
+
 Taken together, the wide experiences with the WebRTC Data Channel and QUIC
 demonstrate that the transport services necessary to support real-time
 traffic could be deployed running over UDP. Our work prototyping the TCP
