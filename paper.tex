@@ -323,16 +323,16 @@ into four categories:
     delivered, or it is lost in its entirety.
 
     The \texttt{send\_message()} call takes four additional parameters
-    compared to the standard Berkeley Sockets API. These are 1) a message
-    sequence number, that can be used to re-order messages and detect
-    message loss; 2) a relative deadline, which is combined with an
-    estimate of the current round-trip-time, and the time that the message
-    has spent in the sending buffer, to determine if a message will arrive
-    in time to be played-out; 3) the sequence number of any message on
-    which this depends, for example the sequence number of a video I-frame
-    on which a P-frame is predicted; and 4) a sub-stream identifier, used,
-    for example, to differentiate audio, video, sub-title, control, and
-    repair streams.
+    compared to the standard Berkeley Sockets API. These are 1) a
+    message sequence number, that can be used to re-order messages and
+    detect message loss; 2) a relative deadline, which is combined
+    with an estimate of the current round-trip-time, and the time that
+    the message has spent in the sending buffer, to determine if a
+    message will arrive in time to be played-out; 3) the message
+    sequence number of any message on which this depends, for example,
+    of a video I-frame on which a P-frame is predicted; and 4) a
+    sub-stream identifier, used, for example, to differentiate audio,
+    video, sub-title, control, and repair streams.
 
     The \texttt{recv\_message()} call returns the sequence number,
     dependency information, and sub-stream identifier along with any
@@ -345,11 +345,12 @@ into four categories:
 
 
 A message that won't arrive within its lifetime is considered to have
-\emph{expired}. Applications specify the application-level sequence number
-of a message they depend on (\texttt{depends\_on}). If the message depends
-on a message that has expired, then it too is considered to have expired.
-The partial reliability service follows from the deadline and dependency
-services: messages will be reliably transmitted until they expire.
+\emph{expired}. A message is also considered to have expired if its
+message sequence number dependency, \texttt{depends\_on},
+%on which a message depends, . If the message depends on a message that has expired, then it too is considered to have
+has expired. A partial reliability service follows
+from this deadline and dependency service: messages will be reliably
+transmitted until they expire.
 
 
 \begin{table}
