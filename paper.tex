@@ -622,10 +622,17 @@ we have shown that we can provide all of the transport services needed by
 real-time applications, using either TCP or UDP. 
 
 Evidence that these services can be deployed above UDP exists in the form
-of the WebRTC data channel \cite{draft-ietf-rtcweb-data-channel-13}.  
-\todo{expand}
-
-\todo{also QUIC}
+of the WebRTC data channel \cite{draft-ietf-rtcweb-data-channel-13} and
+QUIC protocol \cite{draft-tsvwg-quic-protocol-02}.  
+The former is a peer-to-peer protocol, comprising an SCTP association
+running over DTLS, itself running over a UDP flow negotiated via an SDP
+\cite{RFC4566} offer/answer exchange \cite{RFC3264} as part of a WebRTC
+session \cite{jennings:2013:rtcweb} (the WebRTC media channel uses RTP
+running over UDP also, further showing the utility of UDP-based data). 
+This has been deployed in popular web browsers, with global deployment, and
+demonstrated to be effective.  The latter is implemented by Google in their
+Chrome browser, and used as an alternative to TCP has a significant
+fraction of web traffic downloads from their domain.
 
 % The API shown in Table \ref{tab:api} is largely similar to that PR-SCTP,
 % which has seen real-world deployments within the WebRTC protocol,
@@ -633,20 +640,27 @@ of the WebRTC data channel \cite{draft-ietf-rtcweb-data-channel-13}.
 
 Deployments using UDP are popular, and work well. However, as described in
 Section \ref{sec:ossification}, there are also reasons for providing these 
-services running over TCP. 
-\todo{
-  these services are deployed over TCP now, but have an inconvenient API that
-  imposes lots of work on application developers, and with higher than desired
-  latency. 
-  TCP Hollywood offers a way to fix both issues.
-  Brief summary.
-  Obviously we need to change TCP congestion control too.
-}
+services over TCP, since there are a significant fraction of networks that
+block UDP traffic. It is clearly possible to run real-time traffic over
+TCP, as demonstrated by applications such as NetFlix or the BBC iPlayer
+that comprise the majority of Internet traffic. However, TCP has a
+inconvenient API that imposes lots of work on application developers, and
+introduces higher than desired latency. We have shown how to address these
+issues, and provide the full set of transport services we propose in
+Section \ref{sec:services} in previous work, with our TCP Hollywood
+proposal \cite{mcquistin2016hollywood}.
 
-The architecture of TCP Hollywood \cite{mcquistin2016hollywood} is shown in
+\begin{figure}[t]
+ \centering
+ \includegraphics[scale=0.965]{figures/tcp-hollywood.pdf}
+ \caption{TCP Hollywood architecture}
+\label{diagram:tcp-hollywood}
+\end{figure}
+
+The architecture of TCP Hollywood is shown in
 Figure \ref{diagram:tcp-hollywood}. TCP Hollywood provides all of the
 services described in Section \ref{sec:services}, with functionality split
-across an intermediary layer (in userspace), and a set of modifications to
+across an intermediary layer (in user-space), and a set of modifications to
 the kernel. The intermediary layer is responsible for providing the
 message-oriented abstraction, and exposing the API for partial reliability.
 The kernel modifications implement the deadline and dependency services,
@@ -657,12 +671,9 @@ congestion control mechanism. Clearly, this loss-based mechanism is not
 suitable for real-time applications, and a delay-based algorithm should
 be adopted.
 
-\begin{figure}[t]
- \centering
- \includegraphics[scale=0.965]{figures/tcp-hollywood.pdf}
- \caption{TCP Hollywood architecture}
-\label{diagram:tcp-hollywood}
-\end{figure}
+\todo{Stephen: give more detail, and expand this to a whole column}
+
+\todo{discuss how we need to change TCP congestion control}
 
 Taken together, the wide experiences with the WebRTC Data Channel and QUIC
 demonstrate that the transport services necessary to support real-time
@@ -735,7 +746,7 @@ our initial work shows that this is frequently possible, and works well
 enough to offer benefit.
 
 %==================================================================================================
-\section{Acknowledgements}
+%\section{Acknowledgements}
 
 % Acknowledge funding sources.
 
