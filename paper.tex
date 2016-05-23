@@ -36,7 +36,7 @@
 }
 %==================================================================================================
 \begin{document}
-\title{Implementing Real-time Transport Services over an Ossified Network}
+\title{Implementing Real-Time Transport Services over an Ossified Network}
 \numberofauthors{3}
 \author{
   \alignauthor
@@ -64,7 +64,15 @@
 %  - Say what your solution achieves
 %  - Say what follows from your solution
 
-
+Real-time applications require a set of transport services not currently
+provided by widely-deployed transport protocols. Ossification prevents the
+deployment of a novel protocols, restricting solutions to protocols using
+either TCP or UDP as a substrate. We describe the transport services
+required by real-time applications. We show that, in the short term (i.e.,
+while UDP is blocked at current levels), TCP offers a feasible substrate
+for providing these services. Over the longer term, protocols using UDP
+may reduce the number of networks blocking UDP, enabling a shift towards
+its use as a demultiplexing layer for novel transport protocols.
 
 \end{abstract}
 %==================================================================================================
