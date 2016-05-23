@@ -1,4 +1,4 @@
-\documentclass{sig-alternate-05-2015}
+\documentclass[10pt]{sig-alternate-05-2015}
 \usepackage[l2tabu,orthodox]{nag}
 \usepackage[utf8x]{inputenc}
 \usepackage[british]{babel}
@@ -274,28 +274,32 @@ For the applications under scrutiny, a missed frame that fails to deliver by its
 deadline is much less disruptive than a stall in play-out.
 
 \subsection{Message-oriented Dependencies}
-Given deadlines and partial reliability, the next important transport
-service is \emph{dependency management}. There is no point in sending data
-that cannot be used because it depends on previous data that was not
-received. Providing this service is complicated by the two ways in which
-data can be \emph{useful} to applications: it may itself by played out, or
-it may be needed as part of the application's decoding chain. For example,
-an I frame provides utility both in being played out, and in allowing for
-subsequent P and B frames. As a result, dependency information may result
-in deadline information being overruled: data may be sent even if it cannot
-be played out, if it is necessary for the decoding of other data.
 
-Providing partial reliability, through deadlines and dependencies, requires
-the use of application-level framing \cite{clark:1990:architecture} to
-make the best use of payload data, irrespective of packet loss. At the
-transport layer, this implies that we provide a \emph{message oriented}
-service, that maintains ADU boundaries.
+The combination of deadlines and partial reliability leads to \emph{dependency
+management} as an important transport service.
+% There is no point in sending data that cannot be used because it depends on
+% previous data that was not received.
+In particular, data should never be sent when it relies on a previous
+transmission that was never received. Providing this service is complicated by
+the two ways in which data can be \emph{useful} to applications: It may itself
+by played out, or it may be needed as part of the application's decoding chain.
+For example, I frames provide utility both in being played out, and as
+foundations for subsequent P and B frames. As a result, dependencies may take
+higher priority than deadlines.
+% : data may be sent even if it
+% cannot be played out, if it is necessary for the decoding of other data.
 
-Many multimedia applications make use of multiple data flows. For example,
-a simple IPTV application will maintain separate audio and video flows.
-These could be sent across multiple transport-layer connections, but
-overheads can be reduced by multiplexing these flows on a single
-connection. A \emph{sub-stream} service allows this.
+Partial reliability in the context of both deadlines and dependencies
+requires application-level framing \cite{clark:1990:architecture} to
+make the best use of payload data, irrespective of packet loss. At the transport
+layer, this implies that we provide a \emph{message oriented} service, that
+maintains ADU \todo{first mention?} boundaries.
+
+Message orientation may also be used to construct a \emph{sub-stream} service.
+Many multimedia applications make use of multiple data streams. For example, a
+simple IPTV application will maintain separate audio and video stream. These
+could be sent across multiple transport-layer connections, but overheads can be
+reduced by multiplexing these flows on a single connection.
 
 \subsection{Connection and Congestion Control}
 We note that \emph{congestion control} is important. Clearly, the historic
@@ -689,53 +693,22 @@ proposal \cite{mcquistin2016hollywood}.
 \label{diagram:tcp-hollywood}
 \end{figure}
 
-The architecture of TCP Hollywood is shown in Figure
-\ref{diagram:tcp-hollywood}. TCP Hollywood implements all of the services
-described in Section \ref{sec:services}, splitting functionality across
-an intermediary layer in user-space, and a set of modifications to the
-kernel. This split allows applications to program against one API, whether
-or not the kernel modifications are available: the intermediary layer
-functions in both cases.
+The architecture of TCP Hollywood is shown in
+Figure \ref{diagram:tcp-hollywood}. TCP Hollywood provides all of the
+services described in Section \ref{sec:services}, with functionality split
+across an intermediary layer (in user-space), and a set of modifications to
+the kernel. The intermediary layer is responsible for providing the
+message-oriented abstraction, and exposing the API for partial reliability.
+The kernel modifications implement the deadline and dependency services,
+as well as enabling out-of-order delivery of incoming segments. This split
+allows applications to use a single API, whether or not the kernel
+modifications are available. TCP Hollywood inherits standard TCP's
+congestion control mechanism. Clearly, this loss-based mechanism is not
+suitable for real-time applications, and a delay-based algorithm should
+be adopted.
 
-At the sender, applications pass messages (using an API similar to that
-given in Table \ref{tab:api}) to the intermediary layer, with their
-metadata, including deadline and dependency information. At the 
-intermediary layer, COBS encoding \cite{CB97COBS} is used to escape all
-zero bytes in the message data, allowing them to be used as framing
-markers. The message's metadata is then attached to the encoded and framed
-message, before being passed to the kernel using the standard Berkeley
-sockets API.
+\todo{Stephen: give more detail, and expand this to a whole column}
 
-At the kernel, the message data is queued in TCP's sending buffer, while
-the metadata is held in a separate structure. Nagle's algorithm, designed
-to coalesce smaller writes into larger segments, is disabled to minimise
-latency. As segments are (re-)transmitted, their deadlines and dependencies
-are checked to ensure that the message will be useful on arrival. In the
-current version of TCP Hollywood, the dependency check does not overrule
-the deadline check: only data that can be played out will be sent. If the
-message does not pass the liveness check, the next message in the queue
-that is live will be sent instead. If this is a retransmission, then
-inconsistent retransmissions will be used: the replacement message will be
-sent with the same TCP sequence number as the original.
-
-At the receiver, segments are passed to the kernel, where they are
-initially processed as under standard TCP: duplicate acknowledgements are
-generated for out-of-order segments, for example. After this, a metadata
-entry is created, and placed in FIFO queue. When the intermediary layer
-reads from the socket, it receives the segment associated with the
-metadata entry at the head of the queue, with its TCP sequence number
-attached.
-
-At the intermediary layer on the receiver, incoming segments are scanned
-for complete messages (i.e., data between two zero bytes), which are
-decoded and passed to the application. Any message fragments are buffered,
-alongside their TCP sequence number, awaiting the arrival of the remainder
-of the message. Once the message has been reassembled, it is decoded, and
-delivered to the application.
-
-TCP Hollywood inherits standard TCP's congestion control mechanism.
-Clearly, being a loss-based algorithm, this is not appropriate for
-real-time applications.
 \todo{discuss how we need to change TCP congestion control}
 
 Taken together, the wide experiences with the WebRTC Data Channel and QUIC
