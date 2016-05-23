@@ -112,12 +112,17 @@ its use as a demultiplexing layer for novel transport protocols.
 % context here. Why is the problem of interest and importance to the larger
 % community?
 
-Real-time applications are increasingly important in the Internet.
-We want to make it easier to write these applications, while improving
-the quality of experience for users of those applications by lowering
-latency and increasing robustness.
-In this, we are challenged by the limitations of the standard Internet
-transport protocols, and by the ossified nature of the network, which makes
+Real-time applications are increasingly
+%important
+present in the Internet.
+%We want to make it easier to write these applications
+Such applications should be easier to program, while also improving
+the quality of experience for users.
+ %of those applications
+by lowering latency and increasing robustness.
+%In this, we are
+This limitations of standard Internet transport protocols makes this a
+challenging target. Moreover, the ossified nature of the network makes
 it increasingly difficult to deploy new transports.
 
 % Paragraph 2: What is the specific problem considered in this paper? This
@@ -125,17 +130,19 @@ it increasingly difficult to deploy new transports.
 % paragraph you have established general context and importance. Here you
 % establish specific context and background.
 
-In practice, the only protocols that can be widely used in the Internet are
-TCP and UDP. Other protocols are blocked by firewalls and other middleboxes.
-TCP provides sophisticated congestion control, coupled with a reliable,
-ordered, byte stream API. These are suitable for many applications, but are
-not necessarily appropriate for real-time traffic.  UDP exposes the best-effort
-IP packet delivery service, offering flexibility to develop new protocols,
-but at the cost of requiring completely new protocol mechanisms to be
-defined. Both protocols are usable for real-time applications, but neither
-really provides the right services and API.  This forces each application
-to re-invent mechanisms that should be provided by the transport, increasing
-costs and complexity, raising barriers to innovation.
+In practice, only UDP and TCP are widely usable in the Internet,
+since remaining protocols are blocked by firewalls and other
+middleboxes. UDP exposes the best-effort IP packet delivery service,
+offering the flexibility to develop new protocols. The high costs
+associated involve defining completely new protocol mechanisms. In
+contrast TCP mechanisms are well defined, consisting of sophisticated
+congestion control coupled with a reliable, ordered, byte stream API.
+These are proven suitable for many applications, but are inappropriate
+for real-time traffic. While both protocols may be used for real-time
+applications, neither really provides the right services and API. This
+forces each application to re-invent or re-interpret mechanisms that
+should be provided by the transport. The increased costs and
+complexity of doing so raise barriers to innovation.
 
 % Paragraph 3: "In this paper, we show that...". This is the key paragraph
 % in the introduction - you summarize, in one paragraph, what are the main
@@ -147,15 +154,18 @@ costs and complexity, raising barriers to innovation.
 % State your contributions: these drive the entire paper.  Contributions
 % should be refutable claims, not vague generic statements.
 
-In this paper we discuss the appropriate set of transport services and APIs
-for real-time applications.
-We demonstrate that it is possible to realise these services and APIs
-in the context of both TCP and UDP, despite the limitations imposed by the
-legacy protocols, middleboxes, and ossification of the network.
-We present initial results to show that, despite the observed ossification,
-the network has the flexibility to deploy new transport protocols, if care
-is taken to reinterpret layer boundaries and deploy those new transports in
-the context of TCP and UDP.
+In this paper we identify and present the appropriate set of transport
+services and APIs for real-time applications, and demonstrate their
+merit by implementing a proof-of-concept. We show that it is possible
+to realise real-time services and APIs in the context of both TCP and
+UDP, despite the limitations imposed by their legacies, and by
+middleboxes, and ossification of the network.  Initial experiments
+with our implementation suggest that
+%to show that, despite network ossification,
+the network has the flexibility to deploy new transport protocols,
+provided care is taken to reinterpret layer boundaries that respect
+conventional UDP and TCP.\todo{I can infer the meaning of previous sentence having worked on the problem; otherwise may be very ambiguous to the reader.}
+%and deploy those new transports in the context of TCP and UDP.
 
 % Paragraph 4: What are the differences between your work, and what others
 % have done? Keep this at a high level, as you can refer to future sections
@@ -163,27 +173,30 @@ the context of TCP and UDP.
 % for the reader to know what is new about this work compared to other work
 % in the area.
 
-Our contributions are to identify the needs of real-time applications, and
-the appropriate transport services and APIs to support those needs;
-to illustrate how those transport services can be realised on the current
-Internet, in the context of UDP and TCP deployments; and
-to present some initial measurement results to show that the mechanisms we
-propose ought to be usable in the public Internet.
+% Our contributions
+In doing so we make three main contributions. First, we make explicit
+the needs of real-time applications, as well as the appropriate
+transport services and APIs to support those needs. Second, we
+illustrate an example realisation of those transport services on the
+current Internet, in the context of UDP and TCP deployments. Finally,
+we present initial measurement results that suggest the proposed
+mechanisms ought to be usable in the public Internet.
 
 % Paragraph 5: "We structure the remainder of this paper as follows." Give
 % the reader a road-map for the rest of the paper. Try to avoid redundant
 % phrasing, "In Section 2, In section 3, ..., In Section 4, ... ", etc.
 
-We begin, in Section \ref{sec:services} by discussing transport services
-for real-time applications, and outlining the common conceptual API that
-those applications use.
-This is followed, in Section \ref{sec:ossification}, by a review of the
-deployment considerations for new protocols, caused by ossification of
-the network, with Section \ref{sec:partial} considering, in particular, how
-TCP reliability semantics can evolve within the constraints of the deployed
-infrastructure.
-Section \ref{sec:realising} outlines how the transport services we have
-identified can be realised in practical networks.
+We begin in Section \ref{sec:services} by discussing transport
+services for real-time applications, and outlining the common
+conceptual API that those applications use. This is followed in
+Section \ref{sec:ossification} by a review of deployment
+considerations for new protocols, caused by ossification of the
+network. Section \ref{sec:partial} considers, in particular, how TCP
+reliability semantics can evolve within the constraints of the
+existing infrastructure. The semantics are realised and put into
+practice in Section \ref{sec:realising}.
+% outlines how the transport services we have identified can be
+% realised in practical networks.
 Finally, Section \ref{sec:related} discusses related work, and Section
 \ref{sec:conclusions} concludes.
 
