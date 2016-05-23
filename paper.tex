@@ -777,10 +777,10 @@ alongside their TCP sequence number, awaiting the arrival of the remainder
 of the message. Once the message has been reassembled, it is decoded, and
 delivered to the application.
 
-TCP Hollywood inherits standard TCP's congestion control mechanism.
-Clearly, being a loss-based algorithm, this is not appropriate for
-real-time applications.
-\todo{discuss how we need to change TCP congestion control}
+% TCP Hollywood inherits standard TCP's congestion control mechanism.
+% Clearly, being a loss-based algorithm, this is not appropriate for
+% real-time applications.
+% \todo{discuss how we need to change TCP congestion control}
 
 Taken together, the wide experiences with the WebRTC Data Channel and QUIC
 demonstrate that the transport services necessary to support real-time
@@ -788,12 +788,6 @@ traffic could be deployed running over UDP. Our work prototyping the TCP
 Hollywood protocol, and earlier measurements by Honda \emph{et al}.\
 \cite{honda:2011:extend-tcp} also suggest that deployment over TCP is
 possible.
-
-The challenge for the future is in combining such techniques below a common
-API, so that an application can transparently switch between UDP-based and
-TCP-based transport, depending on what is supported by the underlying
-network. This is the promise of the TAPS API, that we have shown ought to
-be feasible for real-time applications.
 
 %==================================================================================================
 \section{Related Work}
@@ -861,10 +855,16 @@ initial measurement studies that this may be feasible to deploy. Section
 \ref{sec:realising} considers prototypes that present such services over
 UDP, and presents our initial prototype demonstrated for TCP-based use.
 
-Making effective use of the TAPS concept to support real-time multimedia
-requires making significant changes to the TCP specification and API, if 
-such applications are to be able to fall-back to TCP from UDP, and still
-achieve their performance needs.
+The challenge for the future is in combining such techniques below a common
+API, so that an application can transparently switch between UDP-based and
+TCP-based transport, depending on what is supported by the underlying
+network. This is the promise of the TAPS API, that we have shown ought to
+be feasible for real-time applications.
+
+% Making effective use of the TAPS concept to support real-time multimedia
+% requires making significant changes to the TCP specification and API, if 
+% such applications are to be able to fall-back to TCP from UDP, and still
+% achieve their performance needs.
 
 %==================================================================================================
 %\section{Acknowledgements}
