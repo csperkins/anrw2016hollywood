@@ -1,0 +1,138 @@
+===========================================================================
+                        ANRW ‘16 Review #25A
+---------------------------------------------------------------------------
+Paper #25: Implementing Real-Time Transport Services over an Ossified
+          Network
+Reviewer: Brian Trammell <trammell@tik.ee.ethz.ch>
+---------------------------------------------------------------------------
+
+                     Overall merit: A. Good paper, I will champion it
+                        Confidence: X. I am an expert in this area
+
+                        ===== Paper summary =====
+
+This work summarizes the operation of TCP Hollywood, and proposes it as a way
+to make a media-friendly transport service deployable in the Internet. The
+approach does rely on one departure from standard TCP semantics, inconsistent
+retransmission, that appears to work on many UK broadband access networks but
+breaks on some mobile networks. While it is therefore an incomplete mechanism
+for deploying this transport service in all cases, it is a nice addition to
+the arsenal of fallback choices for media-friendly APIs for something like
+TAPS.
+
+                     ===== Comments for author =====
+
+I have a few comments and suggestions for improving the paper:
+
+Some video-specific jargon (I, P, B frames) could be expanded / explained in
+the camera ready to make the paper more readable by a general networking
+audience.
+
+In sec 2.4 incomplete sentence: "Users would be better served by applications
+that to available bandwidth"
+
+In sec 2.4: This may be a little picky, but: "However, to support NAT
+traversal and to help dynamically manage firewall pinholes, it is often
+desirable for the transport to be connection oriented": it's not clear to me
+that on-endpoint state (connection orientation) and in-network state are
+really conceptually the same thing, but this sentence conflates the two as if
+they are. Connectionless protocols create in-network state as well. This
+doesn't really weaken the argument of the rest of the paper, though.
+
+Section 3 should also note that connectionless send and receive already work
+on connection-oriented sockets in the Berkeley API, and are the basis for at
+least one TCP Fast Open implementation.
+
+In section 3, you note that other congestion control algorithms can be easily
+deployed within TCP, but don't say any more about what the API from the point
+of view of a realtime media application might look like. It would be nice if
+you did.
+
+Table 3 shows that the approach mostly works. However, one premise of the
+paper is that Hollywood is useful because it allows a media-friendly transport
+service on networks on which other media-friendly transport services over UDP
+are blocked. It would be nice to back this up by showing which of the tested
+networks *also* have problems with UDP-based protocols (e.g., simply by
+running a WebRTC browser application over them).
+
+Section 4 should have a forward reference to section 5 for the details of how
+inconsistent retransmission and the COBS-based framing work. Section 4 should
+also make clear that a failure of and fallback away from inconsistent
+retransmission would break partial reliability's resistance to head of line
+blocking.
+
+The TCP Hollywood reference [12] is broken.
+
+===========================================================================
+                        ANRW ‘16 Review #25B
+---------------------------------------------------------------------------
+Paper #25: Implementing Real-Time Transport Services over an Ossified
+          Network
+Reviewer: Mirja Kühlewind <mirja.kuehlewind@tik.ee.ethz.ch>
+---------------------------------------------------------------------------
+
+                     Overall merit: B. OK paper, but I will not champion
+                                       it
+                        Confidence: X. I am an expert in this area
+
+                        ===== Paper summary =====
+
+From my point of view, this paper presents an API for TCP Hollywood and
+discusses the applicability and needs of media services in depth, plus
+initial measurements results on the deployability of inconsistent
+retransmissions. These are both interesting and timely contributions.
+
+                     ===== Comments for author =====
+
+I think I would have preferred if the paper would have been structured the
+other way around, starting with TCP Hollywood (and related work on Minions)
+as background info, then discuss measurements and finally the API as main
+contribution; but that's just my view. 
+
+Some more concrete points:
+1) You state that e.g. TCP Vegas could be easily deployed. However
+   effectively it would always be starved as long as other loss-based
+   traffic is present. I think that should be mentioned to discuss this
+   aspect fully.
+2) Inconsistent retransmissions are not well introduced. I would recommend
+   to make this more explicitly, slightly earlier in the text. Further,
+   what's the reason that you send retransmission as all? Implementation
+   complexity or middleboxes? Would be interesting to do some testing on
+   how middleboxes behave if you don't send any retransmissions? I'd guess
+   that you'd have problems with the same middbleboxes in mobile networks
+   that you have detected with your current study.
+3) There is some text in the TCP Hollywood paper on head-of-line blocking
+   that kind of is missing here to understand what you are doing (section
+   5, 2. to last paragraph)
+4) In table 2 the dependencies and seq# are missing as return values for
+   recv_message().
+5) Nits:
+   s/itself by played out/itself be played out
+   s/that to available bandwidth/that adapt to available bandwidth
+   s/receiver indicates the its media/receiver indicates then its media
+
+===========================================================================
+                        ANRW ‘16 Review #25C
+---------------------------------------------------------------------------
+Paper #25: Implementing Real-Time Transport Services over an Ossified
+          Network
+---------------------------------------------------------------------------
+
+                     Overall merit: B. OK paper, but I will not champion
+                                       it
+                        Confidence: Y. I am knowledgeable in this area,
+                                       but not an expert
+
+                        ===== Paper summary =====
+
+Describes an abstract API and possible implementation for allowing
+real-time apps to use UDP and TCP as transport.
+
+                     ===== Comments for author =====
+
+A needed and so far missing contribution to the TAPS working group
+connecting applications needs with transport behaviors.  
+
+Needs a good editorial pass.  There are a few poorly edited paragraphs with
+impossible to parse sentences.
+
