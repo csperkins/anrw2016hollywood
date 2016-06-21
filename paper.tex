@@ -300,11 +300,13 @@ management} as an important transport service.
 % previous data that was not received.
 In particular, data should never be sent when it relies on a previous
 transmission that was never received. Providing this service is complicated by
-the two ways in which data can be \emph{useful} to applications: It may itself
-by played out, or it may be needed as part of the application's decoding chain.
+the two ways in which data can be \emph{useful} to applications: it may itself
+be played out, or it may be needed as part of the application's decoding chain.
 For example, I frames provide utility both in being played out, and as
 foundations for subsequent P and B frames. As a result, dependencies may take
 higher priority than deadlines.
+\todo{Review A: Some video-specific jargon (I, P, B frames) could be
+expanded/explained.}
 % : data may be sent even if it
 % cannot be played out, if it is necessary for the decoding of other data.
 
@@ -326,8 +328,8 @@ We note the importance of congestion control. %Clearly,
 Historically real-time applications needed an isochronous channel,
 and needed to avoid subjected to congestion control. This is impractical on the
 Internet. Further, while some applications are non-adaptive or constant bitrate,
-an increasing number are either or both of adaptive and variable bitrate. Users would be better served by
-applications that to available bandwidth.
+an increasing number are either or both of adaptive and variable bitrate.
+Users would be better served by applications that adapt to available bandwidth.
 
 We note that a connection-oriented transport is a lesser, but useful,
 requirement.
@@ -342,6 +344,8 @@ add a requirement for connection oriented service. Similarly, while not strictly
 needed by the applications, it is beneficial if the transport provides a
 keep-alive service to refresh NAT and firewall bindings if the application goes
 silent.
+\todo{Review A: Indicate that connectionless protocols can create in-network
+state.}
 
 %--------------------------------------------------------------------------------------------------
 \subsection{Abstract API}
@@ -361,7 +365,7 @@ into four categories:
     Clients \texttt{connect()} to a server.
 
    \item Once the connection is established, the receiver
-     indicates the its media play-out delay, in milliseconds, via
+     then indicates its media play-out delay, in milliseconds, via
      the \texttt{set\_po\_delay()} call. This specifies the time that the
      application will buffer data, to compensate for network timing jitter,
      before it is rendered to the user. The play-out delay is fed back to
@@ -571,6 +575,10 @@ delay-based algorithm that reduces latency. It would also be possible to
 implement alternatives that seek stability, or compatibility with the
 dictates of a video codec, rather than traditional ``TCP Friendly''
 congestion control -- even if implemented within TCP.
+\todo{Review A: Show how the API supports alternative congestion control
+algorithms.}
+\todo{Review B: Alternatives might have deployment challenges (e.g.,
+fairness between delay and loss based algorithms).}
 
 The API that is exposed to applications using TCP is invisible from the
 network, and can be changed. Relaxing the API to enable out-of-order
@@ -588,6 +596,9 @@ real-time applications, but still leave a critical issue of how to improve
 timing behaviour. Specifically, how to enable partial reliability for TCP,
 after which it is possible to layer-on support for managing deadlines and
 dependencies.
+
+\todo{Review A: Section 3 should also note that connectionless send and
+receive already work on connection-oriented sockets}
 
 %==================================================================================================
 \section{Partial Reliability and TCP}
@@ -614,6 +625,8 @@ that the mapping between message data and TCP sequence numbers is no longer
 static: a given TCP sequence number may be relate to different messages at
 different times. Therefore, an application-level sequence number is
 required to allow messages to be uniquely identified.
+\todo{Review B: Inconsistent retransmissions are not well introduced. Should
+be more explicit, and earlier.}
 
 When a TCP segment is to be retransmitted, the mapping between its
 sequence number and application-level sequence numbers is used to determine
@@ -694,6 +707,7 @@ must be attached to each message, to allow the receiver to verify its
 integrity. The role of a checksum may also be fulfilled by using a secure
 transport, such as DTLS \cite{rfc:6347}.
 
+\todo{Review A: Section 4 should have a forward reference to section 5}
 %==================================================================================================
 \section{Realising Transport Services}
 \label{sec:realising}
@@ -782,7 +796,8 @@ decoded and passed to the application. Any message fragments are buffered,
 alongside their TCP sequence number, awaiting the arrival of the remainder
 of the message. Once the message has been reassembled, it is decoded, and
 delivered to the application.
-
+\todo{Review B: Head-of-line blocking problem not introduced, so not clear
+why this mechanism is needed.}
 % TCP Hollywood inherits standard TCP's congestion control mechanism.
 % Clearly, being a loss-based algorithm, this is not appropriate for
 % real-time applications.
@@ -832,7 +847,7 @@ QUIC \cite{draft-tsvwg-quic-protocol-02} demonstrates that similar services
 can be provided by a new protocol running over UDP, while \cite{RFC6773} and
 \cite{draft-ietf-rtcweb-data-channel-13} demonstrate that existing protocols,
 DCCP and SCTP, can also be effectively tunnelled over UDP. Fallback to TCP
-is discussed in this paper, and on our previous work \cite{mcquistin2016hollywood}.
+is discussed in this paper, and on our previous work \cite{mcquistin2016tcp}.
 
 %==================================================================================================
 \section{Conclusions}
