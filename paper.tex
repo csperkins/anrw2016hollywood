@@ -455,7 +455,7 @@ into five categories:
      the \texttt{set\_po\_delay()} call. This specifies the time that the
      application will buffer data, to compensate for network timing jitter,
      before it is rendered to the user. The play-out delay is fed back to
-     the sender host, for use as part of the media deadline estimation.
+     the sender, for use as part of the media deadline estimation.
 
   \item Finally, message-oriented data transmission is exposed by the
     \texttt{send\_message()} and \texttt{recv\_message()} functions.
@@ -478,8 +478,8 @@ into five categories:
     video, sub-title, control, and repair streams.
 
     The \texttt{recv\_message()} call returns the sequence number, dependency
-    information, and sub-stream identifier along with any received message,
-    allowing the receiver to direct it to the correct decoding queue.
+    information, and sub-stream identifier along with any received message.
+    This allows the receiver to direct the message to the correct decoding queue.
 
 %    \todo{relate this to the transport services described earlier}
 
@@ -518,14 +518,13 @@ The implication of this reality is that it is difficult to deploy new
 transport protocols. The installed base of NATs, firewalls, and other
 middleboxes is such that packets that do not look like TCP or UDP are
 unlikely to pass the network. We may innovate all we like, provided the
-transport of the future looks like TCP or UDP to middleboxes.\footnote{
+transport of the future looks like TCP or UDP to middleboxes.
   This is inconvenient, certainly, but is not necessarily a bad thing.
   The Internet is critical infrastructure. It support emergency services,
   healthcare applications, infrastructure components, financial services,
   and so on, many of which are essential to the functioning of society.
   Making changes to this type of infrastructure \emph{should} require
-  careful backwards compatibility \cite{mcquistin:2015:reinterpreting}.
-}
+  careful consideration of backwards compatibility \cite{mcquistin:2015:reinterpreting}.
 
 UDP is the obvious base for future protocol development, since it provides
 minimal additional services over the IP layer, allowing great flexibility
@@ -586,7 +585,7 @@ goal of maximising throughput at the expense of latency and variability,
 this is not required by the protocol. TCP Vegas \cite{brakmo:1994:tcp-vegas}
 is perhaps the best known approach that changes these constraints, with a
 delay-based algorithm that reduces latency, although it is known to be less
-aggressive than standard TCP, and is prone to starvation; FAST TCP 
+aggressive than standard TCP, and is prone to starvation. FAST TCP 
 \cite{jin:2004:fast-tcp} is a more modern delay-based algorithm that 
 competes well with standard TCP in many environments, and is seeing 
 commercial deployment.  The development of TCP congestion control shows
@@ -931,7 +930,7 @@ be feasible for real-time applications.
 %
 %==================================================================================================
 \balance
-\bibliographystyle{abbrv}
+\bibliographystyle{acm}
 \bibliography{paper}
 \end{document}
 % vim: set ts=2 sw=2 tw=75 et ai:
