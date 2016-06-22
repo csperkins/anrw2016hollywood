@@ -257,17 +257,14 @@ programming are on the order of seconds.
 % , such as broadcast TV, may have deadlines on the order of seconds,
 % or even tens of seconds for on-demand programming.
 
-% % When compared to conventional real-time systems, networked multimedia
-% % deadlines are neither soft nor hard.
-% Networked multimedia deadlines are unusual when compared to other real-time
-% systems. They are simultaneously flexible and strict: flexible in that the exact
-% value of the deadline is typically not important, provided it is of the right
-% order-of-magnitude for the application, but strict in that any particular
-% deadline provides a hard cut-off, after which the data is useless.
-It is useful to distinguish between networked multimedia deadlines and
-deadlines in conventional real-time systems. A multimedia deadline is neither
-soft, since arrivals played after a deadline contribute to poor experience; nor
-are deadlines hard, since occasional missed messages can be tolerated.
+Networked multimedia deadlines are unusual when compared to other real-time
+systems. They are simultaneously flexible and strict: flexible in that the exact
+value of the deadline is typically not important, provided it is of the right
+order-of-magnitude for the application, but strict in that any particular
+deadline provides a cut-off, after which the data arrives too late to be
+rendered to the user (although, again, it is not entirely useless, since
+it might be used to complete predictive coding state, improving the quality 
+of frames decoded later).
 
 \textbf{Partial Reliability:}
 In a best-effort network, deadlines
