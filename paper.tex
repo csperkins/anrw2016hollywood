@@ -263,7 +263,7 @@ value of the deadline is typically not important, provided it is of the right
 order-of-magnitude for the application, but strict in that any particular
 deadline provides a cut-off, after which the data arrives too late to be
 rendered to the user (although, again, it is not entirely useless, since
-it might be used to complete predictive coding state, improving the quality 
+it might be used to complete a predictive coding chain, improving the quality 
 of frames decoded later).
 
 \textbf{Partial Reliability:}
@@ -286,26 +286,29 @@ when the application is blocked by retransmissions that take too
 long. These stalls are one of the primary causes of poor user experience in
 streaming applications.
 % , and are directly caused by the lack of partial reliability in TCP.
-For the applications under scrutiny, a missed frame that fails to deliver by its
-deadline is much less disruptive than a stall in play-out.
+For the applications under scrutiny, a missed frame that is not delivered
+by its deadline, while surrounding frames are delivered, is much less
+disruptive than a stall in play-out waiting for repair.
 
 \textbf{Message-oriented Dependencies:}
-The combination of deadlines and partial reliability leads to \emph{dependency
-management} as an important transport service.
+The combination of deadlines and partial reliability makes \emph{dependency
+management} an important transport service.
 % There is no point in sending data that cannot be used because it depends on
 % previous data that was not received.
 In particular, data should never be sent when it relies on a previous
 transmission that was never received. Providing this service is complicated by
 the two ways in which data can be \emph{useful} to applications: it may itself
 be played out, or it may be needed as part of the application's decoding chain.
-Interdependencies between frames of video exist within a number of codecs,
-including MPEG-1 \cite{le1991mpeg}, and newer codecs such as H.264
-\cite{wiegand2003overview}. As an example, we consider MPEG-1 video:
-I-frames are independent, while P- and B-frames contain only the changes 
-since the previous frame (P) or between frames (B), and so are dependent on
-the successful arrival of other frames. An I-frame may not arrive in time
-to be played out, but may need to be sent to ensure that dependent P- and
-B-frames are useful. 
+Interdependencies between frames of video exist within a number of codecs.
+The original MPEG-1 codec \cite{le1991mpeg} divided video frames into three
+types. I-frames were independently encoded, while P- and B-frames contain
+only the changes since the previous frame (P), or between frames (B), and so
+could only be decoded dependent on the successful arrival of other frames.
+Newer codecs, such as H.264 \cite{wiegand2003overview}, use more complex
+and sophisticated versions of the same idea. 
+A consequence is that the sender might know that a frame will not arrive in
+time to be played out, but may need to send it anyway to ensure that the
+receiver can decode any dependent frames sent later in the stream.
 
 In the context of both deadlines and dependencies coupled with packet loss, partial reliability
 requires application-level framing \cite{clark:1990:architecture} to
@@ -321,19 +324,21 @@ reduced by multiplexing these flows on a single connection.
 
 \textbf{Connections and Congestion Control:}
 We note the importance of congestion control. Historically, real-time many
-applications have required an isochronous channel, that is not subject to
+applications have required an isochronous channel, and have not implemented
 congestion control. This is impractical on the Internet. Further, while
 some applications are non-adaptive or constant bit-rate, an increasing
-number are either or both of adaptive and variable bit-rate. Users would
-be better served by applications that adapt to available bandwidth.
+number are either, or both, of adaptive and variable bit-rate. Users would
+be better served by applications that adapt to available bandwidth. This is
+especially true of mobile applications, where channel capacity can vary
+significantly over time.
 
 We note that a connection-oriented transport is a lesser requirement for
 many real-time multimedia applications. 
 Indeed, flexibility to change the destination within a call is beneficial
 for applications that support mobile users, and for some forms of multiparty
 session.
-Maintaining per-connection state at the endpoints is helpful for the
-implementation of many forms of congestion control, however. 
+On the other hand, maintaining per-connection state at the endpoints is
+helpful for the implementation of many forms of congestion control.
 Signalling messages indicating start and end of connections can also ease
 NAT traversal, and help dynamically manage firewall pinholes, by indicating
 when in-network state should be created and can be torn down. 
