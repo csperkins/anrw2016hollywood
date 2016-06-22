@@ -28,9 +28,9 @@
 \global\let\tikz@ensure@dollar@catcode=\relax
 \makeatother
 
-\newcommand{\fail}{\tikz\draw[red,fill=red] (0,0) circle (.5ex);}
-\newcommand{\pass}{\tikz\draw[green,fill=green] (0,0) circle (.5ex);}
-\newcommand{\okay}{\tikz\draw[orange,fill=orange] (0,0) circle (.5ex);}
+\newcommand{\fail}{\tikz\draw[red,fill=red] (0,0) rectangle (1.5ex,1.5ex);}
+\newcommand{\pass}{\tikz\draw[green,fill=green] (0,0) circle (.75ex);}
+\newcommand{\okay}{\tikz\draw[orange,fill=orange] (0,0) -- (0.75ex, 1.5ex) -- (1.5ex,0) -- cycle;}
 
 
 \newcommand{\ie}{{i.e.,}\xspace}
@@ -699,7 +699,6 @@ loss.
   \caption[]{Deployability of inconsistent retransmissions, where \pass \thinspace
   indicates successful delivery, \okay \thinspace indicates delivery of the original
   data, and \fail \thinspace indicates connection failure (none observed)}
-  \todo{the labels need to be distinctive shapes, not just different colours}
   \label{tab:deployability}
 \end{table}
 
