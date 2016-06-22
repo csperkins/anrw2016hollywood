@@ -645,9 +645,11 @@ message must be maintained between sender and receiver. This means that a
 framing mechanism is required: it is not sufficient to send each message in
 a single segment, as this mapping will not necessarily be maintained by the
 network. A framing marker is added to the start and end of each message
-before transmission. An encoding algorithm is used to escape all occurrences
-of the framing marker within the message data. This process does not impact
-on the data that can be sent or received by applications.
+before transmission, and removed on reception, and an encoding algorithm 
+is used to escape all occurrences of the framing marker within the message
+data. This process does not impact on the data that can be sent or received
+by applications. As discussed in Section \ref{sec:realising}, COBS framing
+\cite{CB97COBS} is suitable for this purpose.
 
 In order to maintain compatibility with middleboxes, offering partial
 reliability requires using \emph{inconsistent retransmissions}. This means
