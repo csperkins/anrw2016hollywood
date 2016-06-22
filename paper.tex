@@ -587,14 +587,27 @@ delay-based algorithm that reduces latency, although it is known to be less
 aggressive than standard TCP, and is prone to starvation; FAST TCP 
 \cite{jin:2004:fast-tcp} is a more modern delay-based algorithm that 
 competes well with standard TCP in many environments, and is seeing 
-commercial deployment. 
-It would also be possible to
-implement alternatives that seek stability, or compatibility with the
-dictates of a video codec, rather than traditional ``TCP Friendly''
-congestion control -- even if implemented within TCP.
-The development of TCP congestion control shows that there might be
-fairness issues as new algorithms are deployed, but the network does not
-prevent the deployment of those algorithms. 
+commercial deployment.  The development of TCP congestion control shows
+that there might be fairness issues as new algorithms are deployed, but the
+network does not prevent the deployment of those algorithms. 
+
+It would also be possible to implement alternative congestion control
+algorithms that seek stability, or compatibility with the dictates of a
+video codec, rather than traditional ``TCP Friendly'' congestion control,
+even if implemented within TCP.
+To do this effectively might require changes to the interface between the
+application and the TCP stack, even if the on-the-wire format remains the
+same. For example, video applications generate data periodically, and it
+might help the congestion control to know the period, so it can pace out
+data; video traffic is less elastic than many TCP bulk flows, and it might
+be benefical to inform the stack of an upper rate beyond which there is no
+point increasing the congestion window, and a lower rate beyond which the 
+flow cannot proceed; and informing the codec of the RTT and congestion
+window might allow it to better schedule bursts of traffic to match the 
+available capacity. In the interactive video conferencing community, 
+\cite{draft-ietf-rmcat-cc-codec-interactions-02} addresses this issue for
+congestion control over RTP on UDP/IP, but there is no analagous document
+for TCP congestion control interactions as yet. 
 
 The API that is exposed to applications using TCP is invisible from the
 network, and can be changed.  For example, TCP Fast Open \cite{RFC7413} 
