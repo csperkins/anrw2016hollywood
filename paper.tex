@@ -372,6 +372,62 @@ silent.
 %--------------------------------------------------------------------------------------------------
 \subsection{Abstract API}
 
+\begin{table*}[t]
+  \centering
+  \begin{tabularx}{\textwidth}{llll}
+    \toprule
+      Transport Service            & Function & Parameters                                     & Return Value(s) \\
+    \midrule
+                                   & \texttt{socket}
+                                              & \texttt{af} -- Address family                  & Socket descriptor \\
+                                   &          & \texttt{st} -- Socket type & \\
+                                   & \texttt{close}
+                                              & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
+    \midrule
+                                   & \texttt{getsockopt/setsockopt}                                    
+                                              & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
+                                   &          & \texttt{level} -- Protocol level & \\
+                                   &          & \texttt{option} -- Option name & \\
+                                   &          & \texttt{value} -- Option value & \\
+                                   &          & \texttt{len} -- Option length & \\
+    \midrule
+      Connection oriented          & \texttt{bind}
+                                              & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
+                                   &          & \texttt{addr} -- Address to bind to & \\
+                                   &          & \texttt{addrlen} -- Length of \texttt{addr} & \\
+                                   & \texttt{listen}
+                                              & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
+                                   & \texttt{accept}
+                                              & \texttt{sd} -- Listening socket descriptor     & Connection socket descriptor \\
+                                   &          & \texttt{addr} -- Address of peer & \\
+                                   &          & \texttt{addrlen} -- Length of \texttt{addr} & \\
+                                   & \texttt{connect}
+                                              & \texttt{addr} -- Address to connect to         & 0 (success), -1 (error) \\
+                                   &          & \texttt{addrlen} -- Length of \texttt{addr} & \\
+    \midrule
+      Deadlines                    & \texttt{set\_po\_delay}
+                                              & \texttt{delay} -- Playout delay (in ms)        & 0 (success), -1 (error) \\
+    \midrule
+      Message oriented             & \texttt{send\_message}
+                                              & \texttt{sd} -- Socket descriptor               & Number of bytes sent \\
+                                   &          & \texttt{buf} -- Message data & \\
+                                   &          & \texttt{len} -- Length of message data & \\
+                                   &          & \texttt{seq\_num} -- Sequence number & \\
+      Deadlines                    &          & \texttt{deadline} -- Relative deadline of message (in ms) & \\
+      Dependencies                 &          & \texttt{depends\_on} -- \texttt{seq\_num} of dependency & \\
+      Sub-streams                  &          & \texttt{substream} -- Substream identifier & \\
+                                   & \texttt{recv\_message}
+                                              & \texttt{sd} -- Socket descriptor               & Number of bytes received \\
+                                   &          & \texttt{buf} -- Buffer for message data        & Substream identifier \\
+                                   &          & \texttt{len} -- Size of \texttt{buf} & \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Outline transport API for real-time applications. Return values
+  shown are for successful calls; in all cases, -1 is returned in the event
+  of an error}
+  \label{tab:api}
+\end{table*}
+
 Given the set of transport services outlined in Table \ref{tab:services},
 we sketch an abstract API in  Table \ref{tab:api}. The primitives divide
 into five categories:
@@ -434,62 +490,6 @@ message sequence number dependency, \texttt{depends\_on},
 has expired. A partial reliability service follows
 from this deadline and dependency service: messages will be reliably
 transmitted until they expire.
-
-\begin{table*}[t]
-  \centering
-  \begin{tabularx}{\textwidth}{llll}
-    \toprule
-      Transport Service            & Function & Parameters                                     & Return Value(s) \\
-    \midrule
-                                   & \texttt{socket}
-                                              & \texttt{af} -- Address family                  & Socket descriptor \\
-                                   &          & \texttt{st} -- Socket type & \\
-                                   & \texttt{close}
-                                              & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
-    \midrule
-                                   & \texttt{getsockopt/setsockopt}                                    
-                                              & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
-                                   &          & \texttt{level} -- Protocol level & \\
-                                   &          & \texttt{option} -- Option name & \\
-                                   &          & \texttt{value} -- Option value & \\
-                                   &          & \texttt{len} -- Option length & \\
-    \midrule
-      Connection oriented          & \texttt{bind}
-                                              & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
-                                   &          & \texttt{addr} -- Address to bind to & \\
-                                   &          & \texttt{addrlen} -- Length of \texttt{addr} & \\
-                                   & \texttt{listen}
-                                              & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
-                                   & \texttt{accept}
-                                              & \texttt{sd} -- Listening socket descriptor     & Connection socket descriptor \\
-                                   &          & \texttt{addr} -- Address of peer & \\
-                                   &          & \texttt{addrlen} -- Length of \texttt{addr} & \\
-                                   & \texttt{connect}
-                                              & \texttt{addr} -- Address to connect to         & 0 (success), -1 (error) \\
-                                   &          & \texttt{addrlen} -- Length of \texttt{addr} & \\
-    \midrule
-      Deadlines                    & \texttt{set\_po\_delay}
-                                              & \texttt{delay} -- Playout delay (in ms)        & 0 (success), -1 (error) \\
-    \midrule
-      Message oriented             & \texttt{send\_message}
-                                              & \texttt{sd} -- Socket descriptor               & Number of bytes sent \\
-                                   &          & \texttt{buf} -- Message data & \\
-                                   &          & \texttt{len} -- Length of message data & \\
-                                   &          & \texttt{seq\_num} -- Sequence number & \\
-      Deadlines                    &          & \texttt{deadline} -- Relative deadline of message (in ms) & \\
-      Dependencies                 &          & \texttt{depends\_on} -- \texttt{seq\_num} of dependency & \\
-      Sub-streams                  &          & \texttt{substream} -- Substream identifier & \\
-                                   & \texttt{recv\_message}
-                                              & \texttt{sd} -- Socket descriptor               & Number of bytes received \\
-                                   &          & \texttt{buf} -- Buffer for message data        & Substream identifier \\
-                                   &          & \texttt{len} -- Size of \texttt{buf} & \\
-    \bottomrule
-  \end{tabularx}
-  \caption{Outline transport API for real-time applications. Return values
-  shown are for successful calls; in all cases, -1 is returned in the event
-  of an error}
-  \label{tab:api}
-\end{table*}
 
 It is to be noted that this API is not dissimilar to the PR-SCTP abstract
 API, which provides \textit{timed reliability}, using a ``lifetime''
