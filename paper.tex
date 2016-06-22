@@ -232,15 +232,17 @@ protocol based on application needs. It is hoped that this will loosen the
 coupling between application and transport, so enabling deployment of new
 transport protocols.
 
-Table \ref{tab:services} summarises the transport services discussed in this
-Section, and required for real-time multimedia applications.
 %--------------------------------------------------------------------------------------------------
-\subsection{Timing and Transport Services}
+\subsection{Desirable Transport Services}
 
 The work in TAPS provides a vocabulary for discussing the components of
-transport protocols.  The vocabulary is useful when discussing the needs of
-real-time applications, and the protocols to support them.
+transport protocols. The vocabulary is useful when discussing the needs 
+of real-time applications, and the protocols to support them. In this 
+section, we use this to describe the transport services we believe are
+required for real-time multimedia applications.
+Table \ref{tab:services} summarises the transport services discussed.
 
+\textbf{Timing and Deadlines:}
 Timing is the most salient feature of real-time applications. Since their data
 must be conveyed with real-time demands, they all have some concept of a
 \emph{deadline}. Data that fails to present within the deadline is otherwise
@@ -267,7 +269,7 @@ deadlines in conventional real-time systems. A multimedia deadline is neither
 soft, since arrivals played after a deadline contribute to poor experience; nor
 are deadlines hard, since occasional missed messages can be tolerated.
 
-\subsection{Partial Reliability}
+\textbf{Partial Reliability:}
 In a best-effort network, deadlines
 constrain packet delivery service to \emph{partial reliability}.
 %The network has non-zero probability of losing any particular packet.
@@ -290,8 +292,7 @@ streaming applications.
 For the applications under scrutiny, a missed frame that fails to deliver by its
 deadline is much less disruptive than a stall in play-out.
 
-\subsection{Message-oriented Dependencies}
-
+\textbf{Message-oriented Dependencies:}
 The combination of deadlines and partial reliability leads to \emph{dependency
 management} as an important transport service.
 % There is no point in sending data that cannot be used because it depends on
@@ -321,8 +322,7 @@ simple IPTV application will maintain separate audio and video stream. These
 could be sent across multiple transport-layer connections, but overheads can be
 reduced by multiplexing these flows on a single connection.
 
-\subsection{Connection and Congestion Control}
-
+\textbf{Connection and Congestion Control:}
 We note the importance of congestion control. %Clearly,
 Historically real-time applications needed an isochronous channel,
 and needed to avoid subjected to congestion control. This is impractical on the
