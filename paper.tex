@@ -349,6 +349,26 @@ needed by the applications, it is beneficial if the transport provides a
 keep-alive service to refresh NAT and firewall bindings if the application goes
 silent.
 
+\begin{table}
+  \centering
+  \begin{tabular}{ll}
+    \toprule
+      Transport Service     & Requirement \\
+    \midrule
+      Deadlines             & Core        \\
+      Partial reliability   & Core        \\
+      Dependencies          & Core        \\
+      Message-oriented      & Core        \\
+      Sub-streams           & Core        \\
+      Congestion controlled & Core        \\
+      Connection oriented   & Subsidiary  \\
+      Keep-alive            & Subsidiary  \\
+    \bottomrule
+  \end{tabular}
+  \caption{Transport services for real-time multimedia}
+  \label{tab:services}
+\end{table}
+
 %--------------------------------------------------------------------------------------------------
 \subsection{Abstract API}
 
@@ -414,26 +434,6 @@ message sequence number dependency, \texttt{depends\_on},
 has expired. A partial reliability service follows
 from this deadline and dependency service: messages will be reliably
 transmitted until they expire.
-
-\begin{table}
-  \centering
-  \begin{tabular}{ll}
-    \toprule
-      Transport Service     & Requirement \\
-    \midrule
-      Deadlines             & Core        \\
-      Partial reliability   & Core        \\
-      Dependencies          & Core        \\
-      Message-oriented      & Core        \\
-      Sub-streams           & Core        \\
-      Congestion controlled & Core        \\
-      Connection oriented   & Subsidiary  \\
-      Keep-alive            & Subsidiary  \\
-    \bottomrule
-  \end{tabular}
-  \caption{Transport services for real-time multimedia}
-  \label{tab:services}
-\end{table}
 
 \begin{table*}[t]
   \centering
