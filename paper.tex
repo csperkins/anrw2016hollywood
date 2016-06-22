@@ -684,7 +684,8 @@ reset was observed.
 
 We conducted further deployment experiments using
 inconsistent retransmissions \cite{mcquistin2016tcp}, testing all
-major UK providers. The results are shown in Table \ref{tab:deployability}.
+major UK providers, with the sender at the University of Glasgow. 
+The results are shown in Table \ref{tab:deployability}.
 We found that 100\% of tested fixed-line networks
 delivered inconsistent retransmissions successfully. However, the delivery
 of the original segment is common on cellular networks, with only 25\% of
@@ -717,7 +718,10 @@ loss.
     \end{tabular}
   \caption[]{Deployability of inconsistent retransmissions, where \pass \thinspace
   indicates successful delivery, \okay \thinspace indicates delivery of the original
-  data, and \fail \thinspace indicates connection failure (none observed)}
+  data, and \fail \thinspace indicates connection failure (none observed). 
+  We note that the campus firewall near the server blocks UDP traffic, so
+  all are examples where fallback from UDP to TCP is beneficial for
+  real-time traffic.}
   \label{tab:deployability}
 \end{table}
 
