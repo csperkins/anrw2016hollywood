@@ -302,13 +302,14 @@ In particular, data should never be sent when it relies on a previous
 transmission that was never received. Providing this service is complicated by
 the two ways in which data can be \emph{useful} to applications: it may itself
 be played out, or it may be needed as part of the application's decoding chain.
-For example, I frames provide utility both in being played out, and as
-foundations for subsequent P and B frames. As a result, dependencies may take
-higher priority than deadlines.
-\todo{Review A: Some video-specific jargon (I, P, B frames) could be
-expanded/explained.}
-% : data may be sent even if it
-% cannot be played out, if it is necessary for the decoding of other data.
+Interdependencies between frames of video exist within a number of codecs,
+including MPEG-1 \cite{le1991mpeg}, and newer codecs such as H.264
+\cite{wiegand2003overview}. As an example, we consider MPEG-1 video:
+I-frames are independent, while P- and B-frames contain only the changes 
+since the previous frame (P) or between frames (B), and so are dependent on
+the successful arrival of other frames. An I-frame may not arrive in time
+to be played out, but may need to be sent to ensure that dependent P- and
+B-frames are useful. 
 
 In the context of both deadlines and dependencies coupled with packet loss, partial reliability
 requires application-level framing \cite{clark:1990:architecture} to
