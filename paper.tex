@@ -339,14 +339,12 @@ Indeed, flexibility to
 change the destination within a call is beneficial for
 applications that support mobile users, or for some forms of multiparty session.
 However, to support NAT traversal and to help dynamically manage firewall
-pinholes, it is often desirable for the transport to be connection oriented. We
+pinholes, it is often desirable, though not necessary, for the transport to be connection oriented. We
 believe these concerns outweigh the benefits of connectionless transport, and so
 add a requirement for connection oriented service. Similarly, while not strictly
 needed by the applications, it is beneficial if the transport provides a
 keep-alive service to refresh NAT and firewall bindings if the application goes
 silent.
-\todo{Review A: Indicate that connectionless protocols can create in-network
-state.}
 
 %--------------------------------------------------------------------------------------------------
 \subsection{Abstract API}
