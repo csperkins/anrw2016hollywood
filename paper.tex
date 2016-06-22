@@ -351,12 +351,18 @@ silent.
 
 Given the set of transport services outlined in Table \ref{tab:services},
 we sketch an abstract API in  Table \ref{tab:api}. The primitives divide
-into four categories:
+into five categories:
 
 \begin{itemize}
   \item Hosts setup and tear-down sockets using the \texttt{socket()}
     and \texttt{close()} functions, as in the standard Berkeley sockets
     API.
+
+  \item Socket options can be set and read using the \texttt{setsockopt()}
+    and \texttt{getsockopt()} functions respectively, again, mirroring the
+    standard Berkeley sockets API. A socket option may be used to select
+    the desired congestion control algorithm (e.g., as with the
+    \texttt{DCCP\_SOCKOPT\_CCID} socket option in DCCP \cite{rfc:4340}).
 
   \item The connection primitives are the same as those of TCP sockets.
     Servers \texttt{bind()} to a particular address and port, then
@@ -439,6 +445,13 @@ transmitted until they expire.
                                    &          & \texttt{st} -- Socket type & \\
                                    & \texttt{close}
                                               & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
+    \midrule
+                                   & \texttt{getsockopt/setsockopt}                                    
+                                              & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
+                                   &          & \texttt{level} -- Protocol level & \\
+                                   &          & \texttt{option} -- Option name & \\
+                                   &          & \texttt{value} -- Option value & \\
+                                   &          & \texttt{len} -- Option length & \\
     \midrule
       Connection oriented          & \texttt{bind}
                                               & \texttt{sd} -- Socket descriptor               & 0 (success), -1 (error) \\
@@ -574,8 +587,6 @@ delay-based algorithm that reduces latency. It would also be possible to
 implement alternatives that seek stability, or compatibility with the
 dictates of a video codec, rather than traditional ``TCP Friendly''
 congestion control -- even if implemented within TCP.
-\todo{Review A: Show how the API supports alternative congestion control
-algorithms.}
 \todo{Review B: Alternatives might have deployment challenges (e.g.,
 fairness between delay and loss based algorithms).}
 
@@ -652,7 +663,7 @@ original segment was delivered on 7\% of paths tested. Only one connection
 reset was observed.
 
 We conducted further deployment experiments using
-inconsistent retransmissions \cite{mcquistin2016hollywood}, testing all
+inconsistent retransmissions \cite{mcquistin2016tcp}, testing all
 major UK providers. The results are shown in Table \ref{tab:deployability}.
 We found that 100\% of tested fixed-line networks
 delivered inconsistent retransmissions successfully. However, the delivery
@@ -743,7 +754,7 @@ inconvenient API that imposes lots of work on application developers, and
 introduces higher than desired latency. We have shown how to address these
 issues, and provide the full set of transport services we propose in
 Section \ref{sec:services} in previous work, with our TCP Hollywood
-proposal \cite{mcquistin2016hollywood}.
+proposal \cite{mcquistin2016tcp}.
 
 \begin{figure}[t]
  \centering
