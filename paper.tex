@@ -597,7 +597,11 @@ fairness issues as new algorithms are deployed, but the network does not
 prevent the deployment of those algorithms. 
 
 The API that is exposed to applications using TCP is invisible from the
-network, and can be changed. Relaxing the API to enable out-of-order
+network, and can be changed.  For example, TCP Fast Open \cite{RFC7413} 
+has been implemented by overloading the connectionless \texttt{sendto()} 
+call to trigger an implicit \texttt{connect()} when used on an unconnected
+TCP socket.
+Relaxing the API to enable out-of-order
 delivery of segments is trivial: segments are delivered to the application
 in the order that they arrive, with their TCP sequence attached. The TCP
 sequence number can be passed to the application using the existing
@@ -612,9 +616,6 @@ real-time applications, but still leave a critical issue of how to improve
 timing behaviour. Specifically, how to enable partial reliability for TCP,
 after which it is possible to layer-on support for managing deadlines and
 dependencies.
-
-\todo{Review A: Section 3 should also note that connectionless send and
-receive already work on connection-oriented sockets}
 
 %==================================================================================================
 \section{Partial Reliability and TCP}
