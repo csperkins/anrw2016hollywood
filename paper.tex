@@ -579,17 +579,22 @@ the reliability semantic.
 The TCP congestion control algorithm is executed by the end points, and
 can be changed, provided the new version requires no new information to
 be exchanged.
-%\todo{expand, and discuss how this evolution has occurred to date}
 We note that, while standardised TCP congestion control has followed the
 goal of maximising throughput at the expense of latency and variability,
 this is not required by the protocol. TCP Vegas \cite{brakmo:1994:tcp-vegas}
 is perhaps the best known approach that changes these constraints, with a
-delay-based algorithm that reduces latency. It would also be possible to
+delay-based algorithm that reduces latency, although it is known to be less
+aggressive than standard TCP, and is prone to starvation; FAST TCP 
+\cite{jin:2004:fast-tcp} is a more modern delay-based algorithm that 
+competes well with standard TCP in many environments, and is seeing 
+commercial deployment. 
+It would also be possible to
 implement alternatives that seek stability, or compatibility with the
 dictates of a video codec, rather than traditional ``TCP Friendly''
 congestion control -- even if implemented within TCP.
-\todo{Review B: Alternatives might have deployment challenges (e.g.,
-fairness between delay and loss based algorithms).}
+The development of TCP congestion control shows that there might be
+fairness issues as new algorithms are deployed, but the network does not
+prevent the deployment of those algorithms. 
 
 The API that is exposed to applications using TCP is invisible from the
 network, and can be changed. Relaxing the API to enable out-of-order
