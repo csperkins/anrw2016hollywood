@@ -554,7 +554,7 @@ a safety measure (blanket blocking, rather than the more targeted blocks
 used when TCP traffic is used in DDoS attacks, are justified using the
 argument that UDP is not widely used).
 These issues are slowly changing, as UDP-based applications penetrate the
-enterprise consciousness, but not clear that UDP is universally available
+enterprise consciousness, but UDP is not universally available
 (Google report 90-95\% of endpoints are reachable with QUIC
 running over UDP \cite{roskind2013quic}, but it is not clear that the set
 of hosts running their Chrome browser is representative of all Internet
@@ -613,7 +613,7 @@ available capacity. In the interactive video conferencing community,
 congestion control over RTP on UDP/IP, but there is no analagous document
 for TCP congestion control interactions as yet. 
 
-The API that is exposed to applications using TCP is invisible from the
+The API that is exposed to applications using TCP is invisible to the
 network, and can be changed.  For example, TCP Fast Open \cite{RFC7413} 
 has been implemented by overloading the connectionless \texttt{sendto()} 
 call to trigger an implicit \texttt{connect()} when used on an unconnected
@@ -657,7 +657,7 @@ by applications. As discussed in Section \ref{sec:realising}, COBS framing
 
 Middleboxes in the network have ossified around TCP's reliability
 mechanism: they do not expect gaps in the TCP sequence number space.
-Honda \emph{et al.} \cite{honda:2011:extend-tcp} test the behaviour of
+Honda \emph{et al.}\ \cite{honda:2011:extend-tcp} test the behaviour of
 middleboxes in response to gaps in the TCP sequence number space, showing
 that middleboxes interfere with flows in up to 29\% of tested paths. This
 depends on the mechanism and port number used, with ports used by common
@@ -669,7 +669,8 @@ retransmitted segment may not be the same as the original. This means that
 the mapping between message data and TCP sequence numbers is no longer
 static: a given TCP sequence number may be relate to different messages at
 different times. Therefore, an application-level sequence number is
-required to allow messages to be uniquely identified.
+required to allow messages to be uniquely identified (multipath TCP has
+a similar requirement).
 
 When a TCP segment is to be retransmitted, the mapping between its
 sequence number and application-level sequence numbers is used to determine
@@ -685,7 +686,7 @@ dependency expressed by the application.
 
 This mechanism -- inconsistent retransmissions -- is visible to middleboxes
 on the network that are performing payload inspection. These middleboxes
-may interpret this behaviour relating to an attack. For example, a
+may interpret this behaviour as relating to an attack. For example, a
 man-on-the-side attack exhibits similar behaviour, where a malicious host
 is injecting data into an existing TCP flow. As a result, our connection
 may be disrupted. Honda \emph{et al}.\ \cite{honda:2011:extend-tcp} conducted
@@ -696,11 +697,11 @@ original segment was delivered on 7\% of paths tested. Only one connection
 reset was observed.
 
 We conducted further deployment experiments using
-inconsistent retransmissions \cite{mcquistin2016tcp}, testing all
-major UK providers, with the sender at the University of Glasgow. 
+inconsistent retransmissions, testing all
+major UK providers, with the sender at the University of Glasgow \cite{mcquistin2016tcp}. 
 The results are shown in Table \ref{tab:deployability}.
 We found that 100\% of tested fixed-line networks
-delivered inconsistent retransmissions successfully. However, the delivery
+delivered inconsistent retransmissions successfully. However, delivery
 of the original segment is common on cellular networks, with only 25\% of
 tested networks delivering inconsistent retransmissions successfully and
 reliably. The behaviour observed when evaluating cellular networks was
@@ -745,11 +746,12 @@ inconsistent retransmissions are not being delivered, they
 can be disabled for the connection. Further, if a connection reset occurs,
 then the connection should be retried with the mechanism disabled.
 
-Use of inconsistent retransmissions may interact negatively with
-caching and re-segmenting middleboxes, resulting in the corruption of
-messages between sender and receiver. A message may be formed from the
-original message, and an inconsistent retransmission, given how the
-mechanism uses the TCP sequence space. To protect against this, a checksum
+Use of inconsistent retransmissions can interact negatively with
+middleboxes that cache and re-segment TCP streams, resulting in the corruption of
+messages between sender and receiver. The result can be a message formed
+from some combination of the
+original message and an inconsistent retransmission.
+To protect against this, a checksum
 must be attached to each message, to allow the receiver to verify its
 integrity. The role of a checksum may also be fulfilled by using a secure
 transport, such as DTLS \cite{rfc:6347}.
@@ -759,7 +761,8 @@ transport, such as DTLS \cite{rfc:6347}.
 \label{sec:realising}
 
 While further measurement studies are required to confirm the ability to
-deploy wire-visible changes to TCP (such as inconsistent retransmissions),
+deploy wire-visible changes to TCP (such as inconsistent retransmissions)
+in the wider Internet,
 we have shown that we can provide all of the transport services needed by
 real-time applications, using either TCP or UDP.
 
