@@ -17,7 +17,7 @@
 % To produce Type 1 fonts in the document plus allow for 'normal LaTeX accenting' in the critical areas;
 % title, author block, section-heads, confname, etc. etc.
 % i.e. the whole purpose of this version update is to NOT resort to 'inelegant accent patches'.
-% After much research, three extra .sty packages were added to the the tail (ae, aecompl, aeguill) to solve,
+% After much research, three extra .sty packages were added to the tail (ae, aecompl, aeguill) to solve,
 % in particular, the accenting problem(s). We _could_ ask authors (via instructions/sample file) to 'include' these in
 % the source .tex file - in the preamble - but if everything is already provided ('behind the scenes' - embedded IN the .cls)
 % then this is less work for authors and also makes everything appear 'vanilla'.
@@ -124,7 +124,7 @@
 \typeout{shivers@cs.cmu.edu, 4/93 by theobald@cs.mcgill.ca}
 \typeout{Excerpts were taken from (Journal Style) 'esub2acm.cls'.}
 \typeout{****** Bugs/comments/suggestions/technicalities to Gerry Murray -- murray@hq.acm.org ******}
-\typeout{Questions on the style, SIGS policies, etc. to Adrienne Griscti griscti@acm.org}
+\typeout{Questions on the style, SIGS policies, etc. to Adrienne Griscti -- griscti@acm.org}
 
 % New option code by BV
 
@@ -747,7 +747,7 @@
 
 \if@ll
   \NeedsTeXFormat{LaTeX2e}
-  \ProvidesClass{sig-alternate} [2013/05/12 v2.7 based on acmproc.cls V1.3 <Nov. 30 '99>]
+  \ProvidesClass{sig-alternate-05-2015} [2013/05/12 v2.7 based on acmproc.cls V1.3 <Nov. 30 '99>]
   \RequirePackage{latexsym}% QUERY: are these two really needed?
   \let\dooptions\ProcessOptions
 \else
