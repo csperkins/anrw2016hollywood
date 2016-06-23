@@ -475,11 +475,14 @@ into five categories:
     played-out; 3) the message sequence number of any message on which this
     depends, for example, of a video I-frame on which a P-frame is predicted;
     and 4) a sub-stream identifier, used, for example, to differentiate audio,
-    video, sub-title, control, and repair streams.
+    video, sub-title, control, and repair streams. Of this metadata, only the
+    sub-stream identifier is sent on the wire. The sequence number, deadline,
+    and dependency information is used only by the sender to provide the
+    partially reliable service.
 
-    The \texttt{recv\_message()} call returns the sequence number, dependency
-    information, and sub-stream identifier along with any received message.
-    This allows the receiver to direct the message to the correct decoding queue.
+    The \texttt{recv\_message()} call returns the sub-stream identifier and
+    length of the message, along with the received message data. This allows 
+    the receiver to direct the message to the correct decoding queue.
 
 %    \todo{relate this to the transport services described earlier}
 
