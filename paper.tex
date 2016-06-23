@@ -315,10 +315,9 @@ requires application-level framing \cite{clark:1990:architecture} to
 make the best use of payload data. At the transport
 layer, this implies a \emph{message oriented} service, that
 maintains application data unit (ADU) boundaries. Messages are delivered to
-the application in the order they arrive. For example, the combination of
-reliability and in-order delivery in TCP can introduce significant latency:
-incoming segments may be head-of-line blocked waiting for the delivery of
-an earlier segment.
+the application in the order they arrive. As seen in TCP, in-order delivery
+can introduce significant latency: incoming segments may be head-of-line
+blocked waiting for the delivery of an earlier segment.
 
 Message orientation may also be used to construct a \emph{sub-stream} service.
 Many multimedia applications make use of multiple data streams. For example, a
@@ -844,7 +843,7 @@ arrive, removing the latency associated with head-of-line blocking in TCP
 
 At the intermediary layer on the receiver, incoming segments are scanned
 for complete messages (i.e., data between two zero bytes), which are
-decoded and passed to the application. While the segments are sent
+decoded and passed to the application. While segments are sent
 containing only one message, these may be resegmented or coalesced in the
 network. A segment may arrive containing \emph{fragments} of message
 data. These fragments are buffered, alongside their TCP sequence number, 
