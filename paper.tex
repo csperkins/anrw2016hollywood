@@ -655,14 +655,21 @@ data. This process does not impact on the data that can be sent or received
 by applications. As discussed in Section \ref{sec:realising}, COBS framing
 \cite{CB97COBS} is suitable for this purpose.
 
-In order to maintain compatibility with middleboxes, offering partial
-reliability requires using \emph{inconsistent retransmissions}. This means
-that the mapping between message data and TCP sequence numbers is no longer
+Middleboxes in the network have ossified around TCP's reliability
+mechanism: they do not expect gaps in the TCP sequence number space.
+Honda \emph{et al.} \cite{honda:2011:extend-tcp} test the behaviour of
+middleboxes in response to gaps in the TCP sequence number space, showing
+that middleboxes interfere with flows in up to 29\% of tested paths. This
+depends on the mechanism and port number used, with ports used by common
+applications impacted most. To ensure compatibility with these middleboxes,
+offering partial reliability requires using \emph{inconsistent
+retransmissions}. Retransmissions will be triggered as under standard TCP
+to ensure that the sequence number space is filled, but the data in a
+retransmitted segment may not be the same as the original. This means that
+the mapping between message data and TCP sequence numbers is no longer
 static: a given TCP sequence number may be relate to different messages at
 different times. Therefore, an application-level sequence number is
 required to allow messages to be uniquely identified.
-\todo{Review B: Inconsistent retransmissions are not well introduced. Should
-be more explicit, and earlier.}
 
 When a TCP segment is to be retransmitted, the mapping between its
 sequence number and application-level sequence numbers is used to determine
