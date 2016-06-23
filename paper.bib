@@ -1,7 +1,7 @@
 @inproceedings{brakmo:1994:tcp-vegas,
 	Address = {London, {UK}},
 	Author = {Brakmo, L. S. and O'Malley, S. W. and Peterson, L. L.},
-	Booktitle = {Proc.\ {SIGCOMM} Conference},
+	Booktitle = {Proceedings of the {SIGCOMM} Conference},
 	Doi = {10.1145/190314.190317},
 	Month = {August},
 	Organization = {{ACM}},
@@ -20,37 +20,41 @@
 @inproceedings{honda:2011:extend-tcp,
   Address = {Berlin, Germany},
   Author = {Honda, M. and others},
-  Booktitle = {Proc.\ {ACM} {IMC}},
-  Month = {Nov.},
+  Booktitle = {Proceedings of the {Internet} Measurement Conference},
+	Organization = {{ACM}},
+  Month = {November},
   Title = {Is it still possible to extend {TCP}?},
   Year = {2011}}
 
 @inproceedings{mcquistin:2015:reinterpreting,
   Address = {{Z\"urich}, Switzerland},
   Author = {McQuistin, S. and Perkins, C. S.},
-  Booktitle = {Proc. {IAB} Workshop on Stack Evolution in a Middlebox {Internet}},
-  Month = {Jan.},
+  Booktitle = {Proceedings of the {IAB} Workshop on Stack Evolution in a Middlebox {Internet}},
+  Month = {January},
   Title = {{Reinterpreting the Transport Protocol Stack to Embrace Ossification}},
   Year = {2015}}
 
 @inproceedings{mcquistin2016tcp,
   title={{TCP Hollywood: An Unordered, Time-Lined, TCP for Networked Multimedia Applications}},
   author={McQuistin, Stephen and Perkins, Colin and Fayed, Marwan},
-  booktitle={Proc. IFIP Networking},
+  booktitle={Proceedings of the Networking Conference},
+  organization="{IFIP}",
   year={2016}
 }
 
 @inproceedings{nowlan:2012:minion,
   Address = {San Jose, {CA}},
   Author = {Nowlan, M. F. and Tiwari, N. and Iyengar, J. and Amin, S. O. and Ford, B.},
-  Booktitle = {Proc.\ {USENIX} {NSDI}},
-  Month = {Apr.},
+  Booktitle = {Proceedings of the Symposium on Networked Systems Design and Implementation}},
+  organization="{USENIX}"
+  Month = {April},
   Title = {{Fitting Square Pegs Through Round Pipes: Unordered Delivery Wire-Compatible with {TCP} and {TLS}}},
   Year = {2012}}
 
 @inproceedings{mukherjee:2000:timelines,
   author={Mukherjee, B. and Brecht, T.},
-  booktitle={Proc.\ {IEEE} {ICNP}},
+  booktitle={Proceedings of the International Conference on Network Protocols},
+  organization="{IEEE}",
   title={{Time-lined TCP for the TCP-friendly delivery of streaming media}},
   year={2000},
 }
@@ -58,9 +62,8 @@
 @misc{rfc:2827,
   author="Ferguson, P. and Senie, D.",
   title="{{Network Ingress Filtering}}",
-  number="2827",
-  howpublished="RFC 2827",
-  organization="{IETF}",
+  howpublished="{RFC} 2827",
+  organization="{Internet Engineering Task Force}",
   year=2000,
   month=may,
 }
@@ -70,7 +73,7 @@
   howpublished = {{RFC} 3550},
   month = jul,
   number = {3550},
-  publisher = {IETF},
+  publisher = {Internet Engineering Task Force},
   title = {{RTP: A Transport Protocol for Real-Time Applications}},
   year = 2003,
 }
@@ -79,10 +82,8 @@
 @misc{draft-ietf-rtcweb-data-channel-13,
   author = {Jesup, R. and Loreto, S. and Tuezen, M.},
   title = {{WebRTC Data Channels}},
-  series="Internet Draft",
-  howpublished="Internet Draft",
-  publisher="IETF",
-  organization="{IETF}",
+  howpublished="Internet Engineering Task Force",
+  note="Work in Progress",
   year=2015,
   month=jan,
 }
@@ -90,10 +91,8 @@
 @misc{draft-tsvwg-quic-protocol-02,
   author = {Hamilton, R. and Iyengar, J. and Swett, I. and Wilk, A.},
   title = {{QUIC: A UDP-Based Secure and Reliable Transport for HTTP/2}},
-  series="Internet Draft",
-  howpublished="Internet Draft",
-  publisher="IETF",
-  organization="{IETF}",
+  howpublished="Internet Engineering Task Force",
+  note="Work in Progress",
   year=2016,
   month=jan,
 }
@@ -101,28 +100,27 @@
 @misc{draft-byrne-opsec-udp-advisory-00,
   author = {Byrne, C. and Kleberg, J.},
   title = {{Advisory Guidelines for UDP Deployment}},
-  series="Internet Draft",
-  howpublished="Internet Draft",
-  publisher="IETF",
-  organization="{IETF}",
+  howpublished="Internet Engineering Task Force",
+  note="Work in Progress",
   year=2015,
   month="July",
 }
 
 @misc{rfc:6347,
   author       = "Rescorla, E. and Modadugu, N.",
-  title        = "Datagram Transport Layer Security Version 1.2",
+  title        = "{Datagram Transport Layer Security} Version 1.2",
   year         = "2012",
-  month        = "Jan",
-  howpublished = "{IETF}",
+  month        = "January",
+  howpublished = "{Internet Engineering Task Force}",
   note         = "{RFC} 6347"
 }
 
 @inproceedings{clark:1990:architecture,
  author = {Clark, D. D. and Tennenhouse, D. L.},
  title = {{Architectural Considerations for a New Generation of Protocols}},
- booktitle = {Proc.\ {ACM} {SIGCOMM}},
+ booktitle = {Proceedings of the {SIGCOMM} Conference},
  year = {1990},
+ organization = "{ACM}",
  location = {Philadelphia, {PA}},
  numpages = {9},
  doi = {10.1145/99508.99553},
@@ -137,18 +135,22 @@
 	Title = {{SDP}: Session Description Protocol},
 	Year = {2006}}
 
-
-@unpublished{jennings:2013:rtcweb,
-	Author = {Jennings, C. and Hardie, T. and Westerlund, M.},
-	Month = {February},
-	Note = {Reviewed for {IEEE} Communications Magazine},
-	Title = {Real Time Communications for the Web},
-	Year = {2013}}
+@article{jennings:2013:rtcweb,
+	author       = "Jennings, C. and Hardie, T. and Westerlund, M.",
+	title        = "Real Time Communications for the Web",
+  journal      = "{IEEE} Communications Magazine", 
+  volume       = "51", 
+  number       = "4", 
+  year         = "2013", 
+  month        = "April", 
+  pages        = "", 
+}
 
 @inproceedings{CB97COBS,
  author = {Cheshire, S. and Baker, M.},
  title = {{Consistent Overhead Byte Stuffing}},
- booktitle = {Proc. ACM SIGCOMM},
+ booktitle = {Proceedings of the {SIGCOMM} Conference},
+ organization = "{ACM}",
  year = {1997},
  location = {Cannes, France},
 }
@@ -167,7 +169,7 @@
 
 @misc{RFC3264,
   author       = "Rosenberg, J. and Schulzrinne, H.", 
-  title        = "An Offer/Answer Model with the Session Description Protocol ({SDP})", 
+  title        = "An Offer/Answer Model with the {Session Description Protocol} ({SDP})", 
   year         = "2002", 
   month        = "June", 
   howpublished = "{Internet} Engineering Task Force", 
@@ -177,12 +179,12 @@
 @article{le1991mpeg,
   title={{MPEG: A video compression standard for multimedia applications}},
   author={Le Gall, Didier},
-  journal={Communications of the ACM},
+  journal={Communications of the {ACM}},
   volume={34},
   number={4},
   pages={46--58},
   year={1991},
-  publisher={ACM}
+  publisher={{ACM}}
 }
 
 @article{wiegand2003overview,
@@ -193,17 +195,17 @@
   number={7},
   pages={560--576},
   year={2003},
-  publisher={IEEE}
+  publisher={{IEEE}}
 }
 
 @misc{rfc:4340,
   author="E. Kohler and M. Handley and S. Floyd",
-  title="{Datagram Congestion Control Protocol (DCCP)}",
+  title="{Datagram Congestion Control Protocol ({DCCP})}",
   series="Request for Comments",
   number="4340",
   howpublished="{RFC} 4340",
-  publisher="IETF",
-  organization="{IETF}",
+  publisher="Internet Engineering Task Force",
+  organization="{Internet Engineering Task Force}",
   year=2006,
   month=mar,
 }
