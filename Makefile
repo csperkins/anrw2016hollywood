@@ -19,7 +19,7 @@ TEX_BASE = paper
 # this Makefile, and will be removed by "make clean". The files listed in
 # $(TEX_STATIC) are static and will not be removed.
 TEX_STATIC    = 
-TEX_GENERATED =
+TEX_GENERATED = sig-alternate-05-2015.cls
 
 # A list of any figures included in the LaTeX document. These need to be in PDF
 # format, and the file names must include the .pdf extension. The files listed
