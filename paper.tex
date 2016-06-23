@@ -21,8 +21,6 @@
 \usepackage{tabularx}
 \usepackage{rotating}
 \usepackage{tikz}
-\usepackage{xspace}   %MF
-\usepackage{enumitem} %MF
 
 \makeatletter
 \global\let\tikz@ensure@dollar@catcode=\relax
@@ -33,7 +31,6 @@
 \newcommand{\okay}{\tikz\draw[orange,fill=orange] (0,0) -- (0.75ex, 1.5ex) -- (1.5ex,0) -- cycle;}
 
 
-\newcommand{\ie}{{i.e.,}\xspace}
 \newcommand*\rot{\rotatebox{90}}
 
 \newcommand{\todo}[1]{\textbf{\textcolor{red}{To do -- #1}}}
@@ -250,7 +247,7 @@ useless.
 % Deadlines may be short or long.
 The `slack' in a deadline depends on the application. Interactive applications,
 such as telephony, video conferencing, or telepresence, require low end-to-end
-latency. Their deadlines for presenting the media, \ie playing the audio and
+latency. Their deadlines for presenting the media, i.e., playing the audio and
 displaying the video frame, range from tens to a few hundred milliseconds.
 Non-interactive application deadlines associated with broadcast and on-demand
 programming are on the order of seconds.
