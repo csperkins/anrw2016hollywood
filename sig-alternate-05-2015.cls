@@ -1249,7 +1249,9 @@
         \addpenalty\@secpenalty
         \addvspace\@tempskipa
     \fi
-\parskip=0pt % GM July 2000 (non numbered) section heads
+    % Commented out the next line, to ensure columns line up correctly, see
+    % http://jeffe.cs.illinois.edu/pubs/tex/fixacm.sty (csp)
+    % \parskip=0pt % GM July 2000 (non numbered) section heads
     \@ifstar
         {\@ssect{#3}{#4}{#5}{#6}}
         {\@dblarg{\@sect{#1}{#2}{#3}{#4}{#5}{#6}}}%
@@ -1511,7 +1513,9 @@
          \leftmargin\labelwidth
          \advance\leftmargin\labelsep
          \advance\leftmargin\bibindent
-         \parsep=0pt\itemsep=1pt % GM July 2000
+         % Adjusted spacing slightly in next two lines (csp)
+         \parsep=0pt plus 1pt
+         \itemsep=0pt plus 1pt % GM July 2000
          \itemindent -\bibindent
          \listparindent \itemindent
          \usecounter{enumi}
