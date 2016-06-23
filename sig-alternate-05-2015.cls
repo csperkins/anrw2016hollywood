@@ -1515,7 +1515,7 @@
          \advance\leftmargin\bibindent
          % Adjusted spacing slightly in next two lines (csp)
          \parsep=0pt plus 1pt
-         \itemsep=0pt plus 1pt % GM July 2000
+         \itemsep=1pt plus 1pt % GM July 2000
          \itemindent -\bibindent
          \listparindent \itemindent
          \usecounter{enumi}
