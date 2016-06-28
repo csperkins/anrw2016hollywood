@@ -21,6 +21,14 @@
 \usepackage{tabularx}
 \usepackage{rotating}
 \usepackage{tikz}
+\usepackage[numbers]{natbib}
+
+\makeatletter
+\renewcommand{\@biblabel}[1]{[#1]\hfill}
+\makeatother
+
+\setlength{\bibsep}{0pt}
+\renewcommand{\bibsection}{}
 
 \makeatletter
 \global\let\tikz@ensure@dollar@catcode=\relax
@@ -945,6 +953,8 @@ be feasible for real-time applications.
 %
 %==================================================================================================
 \balance
+\section{References}
+\vspace*{-\baselineskip}
 \bibliographystyle{abbrv}
 \bibliography{paper}
 \end{document}
